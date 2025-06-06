@@ -433,6 +433,7 @@ tasks:
           --filter="+ /.ci/***" \
           --filter="+ /*.y*ml" \
           --filter="+ /*.toml" \
+          --filter="+ /uv.lock" \
           --filter="- *" \
           * .* \
           "{{.DEST_DIR}}"

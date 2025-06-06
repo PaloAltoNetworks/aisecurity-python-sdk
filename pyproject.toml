@@ -1,0 +1,355 @@
+####################
+# Project Metadata #
+####################
+[project]
+name = "pan-aisecurity"
+description = "Palo Alto Networks AI Runtime Security: API Intercept Python SDK"
+requires-python = ">= 3.9"
+authors = [
+  { name = "Palo Alto Networks AI Runtime Security SDK Team", email = "dl-airs-api-sdk@paloaltonetworks.com" },
+]
+License-Expression = "LicenseRef-PolyForm-Internal-Use-License-1.0.0"
+License-File = [
+  "LICENSE"
+]
+readme = "README.md"
+keywords = [
+  "PaloAltoNetworks",
+  "Palo Alto Networks",
+  "AI Security",
+  "AI Runtime Security",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "License :: Other/Proprietary License",
+  "Natural Language :: English",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Typing :: Typed",
+]
+include = [
+  "asyncio_openapi_client/py.typed",
+  "openapi_client/py.typed",
+]
+
+dynamic = [
+  "version",
+]
+
+dependencies = [
+  "aiodns>=1.1",
+  "aiohttp ~= 3.11",
+  "aiohttp-retry ~= 2.9",
+  "arrow ~= 1.3",
+  "pydantic >= 2",
+  "python-dateutil~=2.8",
+  "singleton-decorator ~= 1.0",
+  "typing-extensions ~= 4.7",
+  "urllib3 ~= 2.2",
+]
+
+[dependency-groups]
+dev = [
+  "types-python-dateutil>=2.8",
+  "truststore>=0.10.1; python_full_version >= '3.10'",
+  "rich>=14.0",
+  "packaging>=25.0",
+  "versioningit>=3.1",
+  "python-dotenv>=1.1",
+]
+ci = [
+  "httpx[http2]>=0.28",
+  "google-auth",
+  "requests",
+]
+
+[project.urls]
+Homepage = "https://www.paloaltonetworks.com/prisma/prisma-ai-runtime-security"
+Documentation = "https://pan.dev/ai-runtime-security/scan/api/"
+
+[project.optional-dependencies]
+test = [
+  "coverage-enable-subprocess>=1.0",
+  "coverage[toml]",
+  "mypy>=1.5",
+  "pyright[nodejs]>=1.1.401",
+  "pytest-asyncio>=1.0.0",
+  "pytest-cov>=6.0",
+  "pytest-mock>=3.14.1",
+  "pytest-randomly>=3.16.0",
+  "pytest-rerunfailures>=15.1",
+  "pytest-xdist[psutil]>=3.7.0",
+  "pytest>=8.3.5",
+]
+mcp = [
+    "fastmcp>=2.5.2 ; python_full_version >= '3.10'",
+    "mcp>=1.9.2 ; python_full_version >= '3.10'",
+]
+docs = [
+    "readme-renderer[md]>=44.0",
+]
+
+###########################
+# Build System: Hatchling #
+###########################
+[build-system]
+requires = [
+  "hatchling",
+  "versioningit",
+]
+build-backend = "hatchling.build"
+
+# Define sdist package includes/excludes
+[tool.hatch.build.targets.sdist]
+ignore-vcs = true
+only-include = [
+  "aisecurity/",
+  "README.md",
+  "CHANGELOG.md",
+  "py.typed",
+]
+exclude = [
+  ".openapi-generator",
+  "__pycache__",
+  ".ruff_cache",
+  ".mypy_cache",
+  ".pytest_cache",
+  ".coverage*",
+  "*.pyc",
+  "*.log",
+  "*.tmp",
+]
+
+# Define wheel package includes/excludes
+[tool.hatch.build.targets.wheel]
+packages = [
+  "aisecurity",
+]
+exclude = [
+  ".openapi-generator",
+  "aisecurity/generated_openapi_client/docs",
+]
+
+# Hatch/versioningit dynamically reads build version from git tags
+[tool.hatch.version]
+source = "versioningit"
+
+# Use UV with Hatch for dependency management (instead of virtualenv/pip) in all environments
+[tool.hatch.envs.default]
+installer = "uv"
+# Use optional dependencies in test environments
+features = []
+
+#
+# Automatic Versioning using Git Tags
+# https://versioningit.readthedocs.io/en/stable/index.html
+#
+[tool.versioningit.next-version]
+method = "smallest-release"
+
+[tool.versioningit.format]
+distance = "{next_version}.dev{distance}+{rev}"
+# Example formatted version: 1.2.4.dev42+ge174a1f
+
+dirty = "{base_version}+d{build_date:%Y%m%d}"
+# Example formatted version: 1.2.3+d20230922
+
+distance-dirty = "{base_version}.dev{distance}+{rev}.d{build_date:%Y%m%d}"
+# Example formatted version: 1.2.4.dev42+ge174a1f.d20230922
+
+[tool.versioningit.write]
+file = "aisecurity/_version.py"
+
+[tool.hatch.build.hooks.versioningit-onbuild]
+source-file = "aisecurity/_version.py"
+build-file = "aisecurity/_version.py"
+require-match = false
+append-line = "__version__ = \"{version}\""
+
+##########################
+# PyTest - Code Coverage #
+##########################
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-ra -q --numprocesses=auto --cov=aisecurity --cov=tests --cov-report=term-missing"
+testpaths = [
+  "tests",
+  "examples",
+]
+
+#########################
+# Code Test Coverage    #
+#########################
+
+# $ hatch test
+[tool.hatch.envs.hatch-test]
+extra-args = []
+randomize = true
+parallel = true
+features = []
+
+# Defaults
+# https://hatch.pypa.io/latest/config/internal/testing/#scripts
+[tool.hatch.envs.hatch-test.scripts]
+run = "pytest{env:HATCH_TEST_ARGS:} {args}"
+run-cov = "coverage run -m pytest{env:HATCH_TEST_ARGS:} --ignore=tests/aisecurity/functional {args}"
+cov-combine = "coverage combine"
+cov-report = "coverage report"
+pip = "{env:HATCH_UV} pip {args}"
+
+[[tool.hatch.envs.hatch-test.matrix]]
+# https://devguide.python.org/versions/
+python = [
+  "3.9",
+  "3.10",
+  "3.11",
+  "3.12",
+  "3.13",
+]
+
+[tool.hatch.envs.full-test.scripts]
+coverage = "pytest --cov-report=term-missing --cov-config=pyproject.toml --cov=aisecurity --cov=tests --ignore=tests/aisecurity/functional"
+
+#########################################
+# coverage.py - Code Coverage Reporting #
+#########################################
+#
+# https://coverage.readthedocs.io/en/latest/config.html
+#
+[tool.coverage.run]
+command_line = "-m pytest"
+data_file = ".cache/.coverage"
+branch = true
+parallel = true
+include = [
+  "aisecurity/",
+  "tests/"
+]
+omit = [
+  "aisecurity/_version.py",
+  "aisecurity/generated_openapi_client/models/*",
+  "aisecurity/generated_openapi_client/asyncio/*.py",
+  "aisecurity/generated_openapi_client/urllib3/*.py",
+  "tests/aisecurity/generated_openapi_client/models/*",
+  "tests/aisecurity/functional/*",
+  "tests/aisecurity/performance/*",
+  "examples/*"
+]
+
+[tool.coverage.paths]
+# The entries in this section are lists of file paths that should be considered
+# equivalent when combining data from different machines
+aisecurity = ["aisecurity"]
+tests = ["tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+########################
+# MyPy - Type Checking #
+########################
+[tool.hatch.envs.mypy]
+# Use dev dependencies in mypy environment
+features = []
+
+[tool.hatch.envs.mypy.scripts]
+check = "mypy --no-install-types aisecurity tests"
+
+# https://mypy.readthedocs.io/en/stable/config_file.html
+[tool.mypy]
+packages = [
+  "aisecurity",
+]
+exclude = [
+  "aisecurity/generated_openapi_client",
+  "tests",
+  "scripts",
+  "examples",
+]
+strict = true
+show_error_context = true
+show_error_code_links = true
+pretty = true
+
+# List from: https://mypy.readthedocs.io/en/stable/existing_code.html#introduce-stricter-options
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+## Getting these passing should be easy
+strict_equality = true
+
+## Strongly recommend enabling this one as soon as you can
+check_untyped_defs = true
+
+## These shouldn't be too much additional work, but may be tricky to
+## get passing if you use a lot of untyped libraries
+disallow_subclassing_any = true
+disallow_untyped_decorators = true
+disallow_any_generics = true
+
+#disallow_incomplete_defs = true
+#disallow_untyped_defs = true
+
+# Disable impossibly strict configs
+implicit_reexport = true
+disallow_untyped_calls = false
+disable_error_code = ["import-untyped"]
+warn_return_any = false
+
+#############################
+# Bandit - Security Linting #
+#############################
+[tool.bandit]
+exclude_dirs = [
+  ".cache",
+  ".venv",
+  "bin",
+  "dist",
+  "reports",
+  "tests",
+  "venv",
+]
+skips = [
+  "B104",
+]
+
+#############################
+# UV - Package Management   #
+#############################
+
+[tool.uv]
+required-version = ">=0.7.8"
+default-groups = [
+  "dev",
+  "ci",
+]
+
+[[tool.uv.index]]
+url = "https://pypi.org/simple/"
+default = true
+
+
+##################################
+# pyright - static type checking #
+##################################
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+include = [
+  "aisecurity",
+]
+exclude = [
+  "**/__pycache__",
+  "aisecurity/generated_openapi_client",
+  "examples",
+  "scripts",
+  "tests",
+]

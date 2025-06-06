@@ -1,0 +1,26 @@
+# Inherit configuration from parent directory
+extend = "../../.ruff.toml"
+
+# Optionally add more files to include
+# extend-include = []
+
+# Optionally add more files to exclude
+# extend-exclude = []
+
+# Ensure pre-commit doesn't blindly make ruff ignore configured exclusions
+force-exclude = true
+
+include = [
+  "**/*.py",
+  "**/*.py",
+]
+
+[lint]
+ignore = [
+  "N818", # error-suffix-on-exception-name
+  "RUF100", # Unused `noqa` directive
+  "RUF052", # Local dummy variable `{var}` is accessed
+  "UP", # pyupgrade
+  "UP006", # pyupgrade
+  "E721", # Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+]

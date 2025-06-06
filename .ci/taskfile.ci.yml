@@ -85,18 +85,16 @@ tasks:
         {{.MOUNT_PATH}}/.cache/task
       UV_CACHE_DIR: >-
         {{.MOUNT_PATH}}/.cache/uv
-      UV_INDEX_URL: https://art.code.pan.run/artifactory/api/pypi/pypi.org/simple
       # https://docs.astral.sh/uv/configuration/authentication/#custom-ca-certificates
       UV_NATIVE_TLS: true
       UV_TOOL_BIN_DIR: >-
         {{.MOUNT_PATH}}/bin
 
     vars:
-      # https://prodsec.docs.pan.run/docs/devtools/securebaseimage/securebaseimage/#debian
       PYTHON_IMAGE_VERSION: >-
-        {{ .PYTHON_IMAGE_VERSION | default "latest-python313" }}
+        {{ .PYTHON_IMAGE_VERSION | default "3.13-bookworm" }}
       PYTHON_BASE_IMAGE: >-
-        {{ .PYTHON_BASE_IMAGE | default "docker-sbi.art.code.pan.run/secure-base-image-debian" }}
+        {{ .PYTHON_BASE_IMAGE | default "docker.io/library/python" }}
       MOUNT_PATH: >-
         /{{.ROOT_DIR | osBase}}
       ENGINE:

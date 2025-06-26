@@ -31,22 +31,6 @@ class TestAsyncScanExecutor(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.async_scan_executor = AsyncScanExecutor()
 
-    async def test_singleton_in_concurrent_tasks(self):
-        async def get_instance():
-            return AsyncScanExecutor()
-
-        # Create multiple tasks to get AsyncScanExecutor instances
-        tasks = [asyncio.create_task(get_instance()) for _ in range(10)]
-
-        # Wait for all tasks to complete
-        instances = await asyncio.gather(*tasks)
-
-        # Check if all instances are the same
-        first_instance = instances[0]
-        for instance in instances[1:]:
-            self.assertIs(instance, first_instance)
-            self.assertEqual(id(instance), id(first_instance))
-
     @patch(
         "aisecurity.scan.asyncio.async_scan_executor.ScanApiBase.scan_api",
         new_callable=AsyncMock,

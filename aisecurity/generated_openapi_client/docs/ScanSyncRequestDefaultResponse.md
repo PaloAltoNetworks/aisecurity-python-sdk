@@ -5,8 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**message** | **str** |  | [optional]
-**error** | **str** |  | [optional]
+**message** | **str** |  | [optional] 
+**error** | **str** |  | [optional] 
 
 ## Example
 
@@ -26,3 +26,5 @@ scan_sync_request_default_response_dict = scan_sync_request_default_response_ins
 scan_sync_request_default_response_from_dict = ScanSyncRequestDefaultResponse.from_dict(scan_sync_request_default_response_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+

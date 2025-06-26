@@ -35,6 +35,10 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 from typing_extensions import Self
 
+from aisecurity.generated_openapi_client.models.dlp_pattern_detections_object import (
+    DlpPatternDetectionsObject,
+)
+
 
 class DlpReportObject(BaseModel):
     """
@@ -58,6 +62,9 @@ class DlpReportObject(BaseModel):
         default=None,
         description='Indicates whether there was a content match for this rule such as "MATCHED" or "NOT MATCHED"',
     )
+    data_pattern_detection_offsets: Optional[List[DlpPatternDetectionsObject]] = Field(
+        default=None, description="Matched patterns and their byte locations"
+    )
     __properties: ClassVar[List[str]] = [
         "dlp_report_id",
         "dlp_profile_name",
@@ -65,6 +72,7 @@ class DlpReportObject(BaseModel):
         "dlp_profile_version",
         "data_pattern_rule1_verdict",
         "data_pattern_rule2_verdict",
+        "data_pattern_detection_offsets",
     ]
 
     model_config = ConfigDict(
@@ -104,6 +112,13 @@ class DlpReportObject(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in data_pattern_detection_offsets (list)
+        _items = []
+        if self.data_pattern_detection_offsets:
+            for _item_data_pattern_detection_offsets in self.data_pattern_detection_offsets:
+                if _item_data_pattern_detection_offsets:
+                    _items.append(_item_data_pattern_detection_offsets.to_dict())
+            _dict["data_pattern_detection_offsets"] = _items
         return _dict
 
     @classmethod
@@ -122,5 +137,10 @@ class DlpReportObject(BaseModel):
             "dlp_profile_version": obj.get("dlp_profile_version"),
             "data_pattern_rule1_verdict": obj.get("data_pattern_rule1_verdict"),
             "data_pattern_rule2_verdict": obj.get("data_pattern_rule2_verdict"),
+            "data_pattern_detection_offsets": [
+                DlpPatternDetectionsObject.from_dict(_item) for _item in obj["data_pattern_detection_offsets"]
+            ]
+            if obj.get("data_pattern_detection_offsets") is not None
+            else None,
         })
         return _obj

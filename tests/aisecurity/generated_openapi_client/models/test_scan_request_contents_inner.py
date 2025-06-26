@@ -53,6 +53,7 @@ class TestScanRequestContentsInner(unittest.TestCase):
             return ScanRequestContentsInner(
                 prompt="This is the initial prompt example.",
                 response="This is the expected response to the provided prompt.",
+                context="This is Test Content",
             )
         else:
             return ScanRequestContentsInner()
@@ -66,6 +67,7 @@ class TestScanRequestContentsInner(unittest.TestCase):
         self.assertIsInstance(inst_req_only, ScanRequestContentsInner)
         self.assertIsNone(inst_req_only.prompt)
         self.assertIsNone(inst_req_only.response)
+        self.assertIsNone(inst_req_only.context)
 
         # Assertions for instance with optional fields
         self.assertIsInstance(inst_req_and_optional, ScanRequestContentsInner)
@@ -73,6 +75,10 @@ class TestScanRequestContentsInner(unittest.TestCase):
         self.assertEqual(
             inst_req_and_optional.response,
             "This is the expected response to the provided prompt.",
+        )
+        self.assertEqual(
+            inst_req_and_optional.context,
+            "This is Test Content",
         )
 
         # Additional assertions
@@ -83,6 +89,7 @@ class TestScanRequestContentsInner(unittest.TestCase):
             ScanRequestContentsInner(
                 prompt="This is the initial prompt example.",
                 response="This is the expected response to the provided prompt.",
+                context="This is Test Content",
             ),
         )
 

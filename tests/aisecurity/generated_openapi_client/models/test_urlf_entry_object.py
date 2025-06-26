@@ -66,6 +66,7 @@ class TestUrlfEntryObject(unittest.TestCase):
                 url="http://malicious-example.com",
                 risk_level="high",
                 categories=["malware", "phishing"],
+                action="test_allow",
             )
         else:
             return UrlfEntryObject()
@@ -78,11 +79,13 @@ class TestUrlfEntryObject(unittest.TestCase):
         self.assertIsNone(inst_req_only.url)
         self.assertIsNone(inst_req_only.risk_level)
         self.assertIsNone(inst_req_only.categories)
+        self.assertIsNone(inst_req_only.action)
 
         # Assertions for instance with optional fields
         self.assertIsInstance(inst_req_and_optional, UrlfEntryObject)
         self.assertEqual(inst_req_and_optional.url, "http://malicious-example.com")
         self.assertEqual(inst_req_and_optional.risk_level, "high")
+        self.assertEqual(inst_req_and_optional.action, "test_allow")
         self.assertListEqual(inst_req_and_optional.categories, ["malware", "phishing"])
 
         # Additional assertions
@@ -94,6 +97,7 @@ class TestUrlfEntryObject(unittest.TestCase):
                 url="http://malicious-example.com",
                 risk_level="high",
                 categories=["malware", "phishing"],
+                action="test_allow",
             ),
         )
 

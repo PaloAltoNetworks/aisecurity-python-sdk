@@ -48,7 +48,15 @@ class TestPromptDetected(unittest.TestCase):
         # uncomment below to create an instance of `PromptDetected`
 
         if include_optional:
-            return PromptDetected(url_cats=True, dlp=True, injection=True)
+            return PromptDetected(
+                url_cats=True,
+                dlp=True,
+                injection=True,
+                toxic_content=True,
+                malicious_code=True,
+                topic_violation=True,
+                agent=True,
+            )
         else:
             return PromptDetected()
 
@@ -57,24 +65,51 @@ class TestPromptDetected(unittest.TestCase):
         prompt_detected = self.make_instance(include_optional=False)
         prompt_detected_optional = self.make_instance(include_optional=True)
         # Assertions for non-optional instance
+
         self.assertIsInstance(prompt_detected, PromptDetected)
         self.assertFalse(prompt_detected.url_cats)
         self.assertFalse(prompt_detected.dlp)
         self.assertFalse(prompt_detected.injection)
+        self.assertFalse(prompt_detected.toxic_content)
+        self.assertFalse(prompt_detected.malicious_code)
+        self.assertFalse(prompt_detected.topic_violation)
+        self.assertFalse(prompt_detected.agent)
 
         # Assertions for optional instance
         self.assertIsInstance(prompt_detected_optional, PromptDetected)
         self.assertTrue(prompt_detected_optional.url_cats)
         self.assertTrue(prompt_detected_optional.dlp)
         self.assertTrue(prompt_detected_optional.injection)
+        self.assertTrue(prompt_detected_optional.toxic_content)
+        self.assertTrue(prompt_detected_optional.malicious_code)
+        self.assertTrue(prompt_detected_optional.topic_violation)
+        self.assertTrue(prompt_detected_optional.agent)
 
         # Additional assertions to ensure correct behavior
         self.assertNotEqual(prompt_detected, prompt_detected_optional)
         self.assertEqual(prompt_detected, PromptDetected())
         self.assertEqual(
             prompt_detected_optional,
-            PromptDetected(url_cats=True, dlp=True, injection=True),
+            PromptDetected(
+                url_cats=True,
+                dlp=True,
+                injection=True,
+                toxic_content=True,
+                malicious_code=True,
+                topic_violation=True,
+                agent=True,
+            ),
         )
+
+        # Test individual attribute setting
+        custom_prompt = PromptDetected(url_cats=True, injection=False)
+        self.assertTrue(custom_prompt.url_cats)
+        self.assertFalse(custom_prompt.dlp)
+        self.assertFalse(custom_prompt.injection)
+        self.assertFalse(custom_prompt.toxic_content)
+        self.assertFalse(custom_prompt.malicious_code)
+        self.assertFalse(custom_prompt.topic_violation)
+        self.assertFalse(custom_prompt.agent)
 
 
 if __name__ == "__main__":

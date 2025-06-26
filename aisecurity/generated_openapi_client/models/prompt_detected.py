@@ -52,7 +52,30 @@ class PromptDetected(BaseModel):
         default=None,
         description="Indicates whether prompt contains any injection threats",
     )
-    __properties: ClassVar[List[str]] = ["url_cats", "dlp", "injection"]
+    toxic_content: Optional[StrictBool] = Field(
+        default=None,
+        description="Indicates whether prompt contains any harmful content",
+    )
+    malicious_code: Optional[StrictBool] = Field(
+        default=None, description="Indicates whether prompt contains any malicious code"
+    )
+    agent: Optional[StrictBool] = Field(
+        default=None,
+        description="Indicates whether prompt contains any Agent related threats",
+    )
+    topic_violation: Optional[StrictBool] = Field(
+        default=None,
+        description="Indicates whether prompt contains any content violates topic guardrails",
+    )
+    __properties: ClassVar[List[str]] = [
+        "url_cats",
+        "dlp",
+        "injection",
+        "toxic_content",
+        "malicious_code",
+        "agent",
+        "topic_violation",
+    ]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -106,5 +129,9 @@ class PromptDetected(BaseModel):
             "url_cats": obj.get("url_cats"),
             "dlp": obj.get("dlp"),
             "injection": obj.get("injection"),
+            "toxic_content": obj.get("toxic_content"),
+            "malicious_code": obj.get("malicious_code"),
+            "agent": obj.get("agent"),
+            "topic_violation": obj.get("topic_violation"),
         })
         return _obj

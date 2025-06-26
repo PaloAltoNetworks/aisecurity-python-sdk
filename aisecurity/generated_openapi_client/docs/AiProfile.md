@@ -5,8 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**profile_id** | **str** | Unique identifier for the profile. If not provided, then profile_name is required. | [optional]
-**profile_name** | **str** | Name of the profile. If not provided, then profile_id is required. | [optional]
+**profile_id** | **str** | Unique identifier for the profile. If not provided, then profile_name is required. | [optional] 
+**profile_name** | **str** | Name of the profile. If not provided, then profile_id is required. | [optional] 
 
 ## Example
 
@@ -26,3 +26,5 @@ ai_profile_dict = ai_profile_instance.to_dict()
 ai_profile_from_dict = AiProfile.from_dict(ai_profile_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+

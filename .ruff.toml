@@ -58,7 +58,7 @@ preview = true
 ###############################
 
 [lint]
-# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`) codes by default.
 # Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
 # McCabe complexity (`C901`) by default.
 select = [
@@ -111,24 +111,41 @@ convention = "google"
 "_version.py" = [
   "CPY001", # Missing copyright notice at top of file
 ]
+
 "aisecurity/generated_openapi_client/**" = [
   "D", # All documentation from OpenAPI Generated clients
+  "E721", # Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+  "N802", # Ignore CamelCase function names
   "N818", # error-suffix-on-exception-name
-  "RUF100", # Unused `noqa` directive
-  "RUF052", # Local dummy variable `{var}` is accessed
   "RUF036", # `None` not at the end of the type annotation.
+  "RUF052", # Local placeholder variable `{var}` is accessed
+  "RUF100", # Unused `noqa` directive
   "UP", # pyupgrade
   "UP006", # pyupgrade
-  "E721", # Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+]
 
+"aisecurity/generated_openapi_client/*/api_client.py" = [
+  "RUF012"  # Ignore mutable class variable annotation lint errors
+]
+
+"tests/aisecurity/generated_openapi_client/**" = [
+  "N802", # Ignore CamelCase function names
+  "N803", # Ignore CamelCase function/method argument names
+  "D205", # Ignore generated documentation
 ]
 ".ci/scripts/*" = [
   "CPY", # no copyright notice required on these utilities
 ]
+
+"examples/**" = [
+  "CPY", # no copyright notice required on examples
+]
+
 "examples/model_context_protocol/*" = [
   "UP036",
   "UP045",
 ]
+
 "test*.py" = [
   "UP045"
 ]
@@ -161,6 +178,5 @@ docstring-code-format = true
 # Set the line length limit used when formatting code snippets in
 # docstrings.
 #
-# This only has an effect when the `docstring-code-format` setting is
-# enabled.
+# This only has an effect when the `docstring-code-format` setting is enabled.
 docstring-code-line-length = "dynamic"

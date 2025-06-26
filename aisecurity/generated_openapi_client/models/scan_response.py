@@ -36,6 +36,7 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Self
 
+from aisecurity.generated_openapi_client.models.masked_data import MaskedData
 from aisecurity.generated_openapi_client.models.prompt_detected import PromptDetected
 from aisecurity.generated_openapi_client.models.response_detected import (
     ResponseDetected,
@@ -61,6 +62,8 @@ class ScanResponse(BaseModel):
     )
     prompt_detected: Optional[PromptDetected] = None
     response_detected: Optional[ResponseDetected] = None
+    prompt_masked_data: Optional[MaskedData] = None
+    response_masked_data: Optional[MaskedData] = None
     created_at: Optional[datetime] = Field(default=None, description="Scan request timestamp")
     completed_at: Optional[datetime] = Field(default=None, description="Scan completion timestamp")
     __properties: ClassVar[List[str]] = [
@@ -73,6 +76,8 @@ class ScanResponse(BaseModel):
         "action",
         "prompt_detected",
         "response_detected",
+        "prompt_masked_data",
+        "response_masked_data",
         "created_at",
         "completed_at",
     ]
@@ -120,6 +125,12 @@ class ScanResponse(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of response_detected
         if self.response_detected:
             _dict["response_detected"] = self.response_detected.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of prompt_masked_data
+        if self.prompt_masked_data:
+            _dict["prompt_masked_data"] = self.prompt_masked_data.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of response_masked_data
+        if self.response_masked_data:
+            _dict["response_masked_data"] = self.response_masked_data.to_dict()
         return _dict
 
     @classmethod
@@ -144,6 +155,12 @@ class ScanResponse(BaseModel):
             else None,
             "response_detected": ResponseDetected.from_dict(obj["response_detected"])
             if obj.get("response_detected") is not None
+            else None,
+            "prompt_masked_data": MaskedData.from_dict(obj["prompt_masked_data"])
+            if obj.get("prompt_masked_data") is not None
+            else None,
+            "response_masked_data": MaskedData.from_dict(obj["response_masked_data"])
+            if obj.get("response_masked_data") is not None
             else None,
             "created_at": obj.get("created_at"),
             "completed_at": obj.get("completed_at"),

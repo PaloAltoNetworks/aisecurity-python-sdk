@@ -43,7 +43,22 @@ class ScanRequestContentsInner(BaseModel):
 
     prompt: Optional[StrictStr] = Field(default=None, description="The prompt content that you want to scan")
     response: Optional[StrictStr] = Field(default=None, description="The response content that you want to scan")
-    __properties: ClassVar[List[str]] = ["prompt", "response"]
+    code_prompt: Optional[StrictStr] = Field(
+        default=None,
+        description="Code snippet extracted from Prompt content that you want to scan",
+    )
+    code_response: Optional[StrictStr] = Field(
+        default=None,
+        description="Code snippet extracted from Response content that you want to scan",
+    )
+    context: Optional[StrictStr] = Field(default=None, description="The data context for contextual grounding")
+    __properties: ClassVar[List[str]] = [
+        "prompt",
+        "response",
+        "code_prompt",
+        "code_response",
+        "context",
+    ]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -93,5 +108,11 @@ class ScanRequestContentsInner(BaseModel):
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
 
-        _obj = cls.model_validate({"prompt": obj.get("prompt"), "response": obj.get("response")})
+        _obj = cls.model_validate({
+            "prompt": obj.get("prompt"),
+            "response": obj.get("response"),
+            "code_prompt": obj.get("code_prompt"),
+            "code_response": obj.get("code_response"),
+            "context": obj.get("context"),
+        })
         return _obj

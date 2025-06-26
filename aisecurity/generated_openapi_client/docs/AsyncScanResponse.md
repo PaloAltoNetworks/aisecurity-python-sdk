@@ -5,9 +5,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**received** | **datetime** | Asynchronous scan received timestamp |
-**scan_id** | **str** | Unique identifier for the asynchronous scan request |
-**report_id** | **str** | Unique identifier for the asynchronous scan report | [optional]
+**received** | **datetime** | Asynchronous scan received timestamp | 
+**scan_id** | **str** | Unique identifier for the asynchronous scan request | 
+**report_id** | **str** | Unique identifier for the asynchronous scan report | [optional] 
 
 ## Example
 
@@ -27,3 +27,5 @@ async_scan_response_dict = async_scan_response_instance.to_dict()
 async_scan_response_from_dict = AsyncScanResponse.from_dict(async_scan_response_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+

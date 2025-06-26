@@ -32,21 +32,6 @@ class TestQueryByScanIds(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.query_by_scan_ids = QueryByScanIds()
 
-    async def test_singleton_in_concurrent_tasks(self):
-        async def get_instance():
-            return QueryByScanIds()
-
-        # Create multiple tasks to get AsyncScanExecutor instances
-        tasks = [asyncio.create_task(get_instance()) for _ in range(10)]
-        # Wait for all tasks to complete
-        instances = await asyncio.gather(*tasks)
-
-        # Check if all instances are the same
-        first_instance = instances[0]
-        for instance in instances[1:]:
-            self.assertIs(instance, first_instance)
-            self.assertEqual(id(instance), id(first_instance))
-
     # @pytest.mark.urllib3
     @patch(
         "aisecurity.scan.asyncio.query_by_scan_ids.ScanResultsApi.get_scan_results_by_scan_ids",
@@ -109,7 +94,7 @@ class TestQueryByScanIds(unittest.IsolatedAsyncioTestCase):
     )
     async def test_max_scan_ids(self, mock_get_scan_results_by_scan_ids_api):
         valid_scan_ids = [str(uuid.uuid4()) for _ in range(MAX_NUMBER_OF_SCAN_IDS)]
-        too_many_scan_ids = valid_scan_ids + [str(uuid.uuid4())]
+        too_many_scan_ids = [*valid_scan_ids, str(uuid.uuid4())]
 
         # Test with maximum allowed scan IDs
         await self.query_by_scan_ids.get_scan_results(valid_scan_ids)

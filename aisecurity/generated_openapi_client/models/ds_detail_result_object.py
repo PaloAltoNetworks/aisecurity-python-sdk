@@ -35,7 +35,14 @@ from typing import Any, ClassVar, Dict, List, Optional, Set
 from pydantic import BaseModel, ConfigDict
 from typing_extensions import Self
 
+from aisecurity.generated_openapi_client.models.agent_report_object import (
+    AgentReportObject,
+)
+from aisecurity.generated_openapi_client.models.dbs_entry_object import DbsEntryObject
 from aisecurity.generated_openapi_client.models.dlp_report_object import DlpReportObject
+from aisecurity.generated_openapi_client.models.mc_report_object import McReportObject
+from aisecurity.generated_openapi_client.models.tc_report_object import TcReportObject
+from aisecurity.generated_openapi_client.models.tg_report_object import TgReportObject
 from aisecurity.generated_openapi_client.models.urlf_entry_object import UrlfEntryObject
 
 
@@ -46,7 +53,20 @@ class DSDetailResultObject(BaseModel):
 
     urlf_report: Optional[List[UrlfEntryObject]] = None
     dlp_report: Optional[DlpReportObject] = None
-    __properties: ClassVar[List[str]] = ["urlf_report", "dlp_report"]
+    dbs_report: Optional[List[DbsEntryObject]] = None
+    tc_report: Optional[TcReportObject] = None
+    mc_report: Optional[McReportObject] = None
+    agent_report: Optional[AgentReportObject] = None
+    topic_guardrails_report: Optional[TgReportObject] = None
+    __properties: ClassVar[List[str]] = [
+        "urlf_report",
+        "dlp_report",
+        "dbs_report",
+        "tc_report",
+        "mc_report",
+        "agent_report",
+        "topic_guardrails_report",
+    ]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -95,6 +115,25 @@ class DSDetailResultObject(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of dlp_report
         if self.dlp_report:
             _dict["dlp_report"] = self.dlp_report.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of each item in dbs_report (list)
+        _items = []
+        if self.dbs_report:
+            for _item_dbs_report in self.dbs_report:
+                if _item_dbs_report:
+                    _items.append(_item_dbs_report.to_dict())
+            _dict["dbs_report"] = _items
+        # override the default output from pydantic by calling `to_dict()` of tc_report
+        if self.tc_report:
+            _dict["tc_report"] = self.tc_report.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of mc_report
+        if self.mc_report:
+            _dict["mc_report"] = self.mc_report.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of agent_report
+        if self.agent_report:
+            _dict["agent_report"] = self.agent_report.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of topic_guardrails_report
+        if self.topic_guardrails_report:
+            _dict["topic_guardrails_report"] = self.topic_guardrails_report.to_dict()
         return _dict
 
     @classmethod
@@ -111,5 +150,16 @@ class DSDetailResultObject(BaseModel):
             if obj.get("urlf_report") is not None
             else None,
             "dlp_report": DlpReportObject.from_dict(obj["dlp_report"]) if obj.get("dlp_report") is not None else None,
+            "dbs_report": [DbsEntryObject.from_dict(_item) for _item in obj["dbs_report"]]
+            if obj.get("dbs_report") is not None
+            else None,
+            "tc_report": TcReportObject.from_dict(obj["tc_report"]) if obj.get("tc_report") is not None else None,
+            "mc_report": McReportObject.from_dict(obj["mc_report"]) if obj.get("mc_report") is not None else None,
+            "agent_report": AgentReportObject.from_dict(obj["agent_report"])
+            if obj.get("agent_report") is not None
+            else None,
+            "topic_guardrails_report": TgReportObject.from_dict(obj["topic_guardrails_report"])
+            if obj.get("topic_guardrails_report") is not None
+            else None,
         })
         return _obj

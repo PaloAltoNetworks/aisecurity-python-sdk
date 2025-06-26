@@ -49,7 +49,40 @@ class ResponseDetected(BaseModel):
         default=None,
         description="Indicates whether response contains any sensitive information",
     )
-    __properties: ClassVar[List[str]] = ["url_cats", "dlp"]
+    db_security: Optional[StrictBool] = Field(
+        default=None,
+        description="Indicates whether response contains any database security threats",
+    )
+    toxic_content: Optional[StrictBool] = Field(
+        default=None,
+        description="Indicates whether response contains any harmful content",
+    )
+    malicious_code: Optional[StrictBool] = Field(
+        default=None,
+        description="Indicates whether response contains any malicious code",
+    )
+    agent: Optional[StrictBool] = Field(
+        default=None,
+        description="Indicates whether response contains any Agent related threats",
+    )
+    ungrounded: Optional[StrictBool] = Field(
+        default=None,
+        description="Indicates whether response contains any ungrounded content",
+    )
+    topic_violation: Optional[StrictBool] = Field(
+        default=None,
+        description="Indicates whether response contains any content violates topic guardrails",
+    )
+    __properties: ClassVar[List[str]] = [
+        "url_cats",
+        "dlp",
+        "db_security",
+        "toxic_content",
+        "malicious_code",
+        "agent",
+        "ungrounded",
+        "topic_violation",
+    ]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -99,5 +132,14 @@ class ResponseDetected(BaseModel):
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
 
-        _obj = cls.model_validate({"url_cats": obj.get("url_cats"), "dlp": obj.get("dlp")})
+        _obj = cls.model_validate({
+            "url_cats": obj.get("url_cats"),
+            "dlp": obj.get("dlp"),
+            "db_security": obj.get("db_security"),
+            "toxic_content": obj.get("toxic_content"),
+            "malicious_code": obj.get("malicious_code"),
+            "agent": obj.get("agent"),
+            "ungrounded": obj.get("ungrounded"),
+            "topic_violation": obj.get("topic_violation"),
+        })
         return _obj

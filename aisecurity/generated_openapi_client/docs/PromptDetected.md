@@ -5,9 +5,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**url_cats** | **bool** | Indicates whether prompt contains any malicious URLs | [optional] 
-**dlp** | **bool** | Indicates whether prompt contains any sensitive information | [optional] 
-**injection** | **bool** | Indicates whether prompt contains any injection threats | [optional] 
+**url_cats** | **bool** | Indicates whether prompt contains any malicious URLs | [optional]
+**dlp** | **bool** | Indicates whether prompt contains any sensitive information | [optional]
+**injection** | **bool** | Indicates whether prompt contains any injection threats | [optional]
 
 ## Example
 
@@ -27,5 +27,3 @@ prompt_detected_dict = prompt_detected_instance.to_dict()
 prompt_detected_from_dict = PromptDetected.from_dict(prompt_detected_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
-
-

@@ -5,11 +5,11 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**report_id** | **str** | Unique identifier for the scan report | [optional] 
-**scan_id** | **str** | Unique identifier for the scan | [optional] 
-**req_id** | **int** | Unique identifier of an individual element sent in the batch scan request | [optional] 
-**transaction_id** | **str** | Unique identifier for the transaction | [optional] 
-**detection_results** | [**List[DetectionServiceResultObject]**](DetectionServiceResultObject.md) |  | [optional] 
+**report_id** | **str** | Unique identifier for the scan report | [optional]
+**scan_id** | **str** | Unique identifier for the scan | [optional]
+**req_id** | **int** | Unique identifier of an individual element sent in the batch scan request | [optional]
+**transaction_id** | **str** | Unique identifier for the transaction | [optional]
+**detection_results** | [**List[DetectionServiceResultObject]**](DetectionServiceResultObject.md) |  | [optional]
 
 ## Example
 
@@ -29,5 +29,3 @@ threat_scan_report_object_dict = threat_scan_report_object_instance.to_dict()
 threat_scan_report_object_from_dict = ThreatScanReportObject.from_dict(threat_scan_report_object_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
-
-

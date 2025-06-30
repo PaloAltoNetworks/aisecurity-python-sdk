@@ -5,8 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**prompt** | **str** | The prompt content that you want to scan | [optional] 
-**response** | **str** | The response content that you want to scan | [optional] 
+**prompt** | **str** | The prompt content that you want to scan | [optional]
+**response** | **str** | The response content that you want to scan | [optional]
 
 ## Example
 
@@ -26,5 +26,3 @@ scan_request_contents_inner_dict = scan_request_contents_inner_instance.to_dict(
 scan_request_contents_inner_from_dict = ScanRequestContentsInner.from_dict(scan_request_contents_inner_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
-
-

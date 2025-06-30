@@ -1,3 +1,16 @@
+#!/usr/bin/env -S uv run --script
+# PEP 723 Inline Script Metadata
+# /// script
+# requires-python = ">=3.13"
+# dependencies = [
+#     "rich",
+#     "google-auth",
+#     "httpx[http2]",
+#     "requests",
+#     "rich",
+#     "truststore",
+# ]#
+# ///
 import argparse
 import asyncio
 import logging
@@ -175,5 +188,7 @@ def get_id_token(
 
 
 if __name__ == "__main__":
-    logging.basicConfig(format="%(message)s", level=logging.INFO, handlers=[rich.logging.RichHandler()])
+    console = rich.console.Console(stderr=True)
+    logging.basicConfig(format="%(message)s", level=logging.INFO, handlers=[rich.logging.RichHandler(console=console)])
+    logging.getLogger("httpx").setLevel(logging.WARNING)
     asyncio.run(main())

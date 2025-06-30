@@ -5,8 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**url_cats** | **bool** | Indicates whether response contains any malicious URLs | [optional] 
-**dlp** | **bool** | Indicates whether response contains any sensitive information | [optional] 
+**url_cats** | **bool** | Indicates whether response contains any malicious URLs | [optional]
+**dlp** | **bool** | Indicates whether response contains any sensitive information | [optional]
 
 ## Example
 
@@ -26,5 +26,3 @@ response_detected_dict = response_detected_instance.to_dict()
 response_detected_from_dict = ResponseDetected.from_dict(response_detected_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
-
-

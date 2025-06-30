@@ -5,8 +5,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**status_code** | **int** | The HTTP status code for the error | 
-**message** | **str** | The error message | 
+**status_code** | **int** | The HTTP status code for the error |
+**message** | **str** | The error message |
 
 ## Example
 
@@ -26,5 +26,3 @@ error_dict = error_instance.to_dict()
 error_from_dict = Error.from_dict(error_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
-
-

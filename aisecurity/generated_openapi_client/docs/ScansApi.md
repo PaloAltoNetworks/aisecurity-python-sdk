@@ -54,7 +54,7 @@ with generated_openapi_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **async_scan_object** | [**List[List[AsyncScanObject]]**](List.md)| A list of scan request objects | 
+ **async_scan_object** | [**List[List[AsyncScanObject]]**](List.md)| A list of scan request objects |
 
 ### Return type
 
@@ -124,7 +124,7 @@ with generated_openapi_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **scan_request** | [**ScanRequest**](ScanRequest.md)| Scan request object | 
+ **scan_request** | [**ScanRequest**](ScanRequest.md)| Scan request object |
 
 ### Return type
 
@@ -147,4 +147,3 @@ No authorization required
 **0** | error |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-

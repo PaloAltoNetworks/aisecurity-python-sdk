@@ -5,10 +5,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**req_id** | **int** | Unique identifier of an individual element sent in the batch scan request | [optional] 
-**status** | **str** | Scan request processing state such as \&quot;complete\&quot; or \&quot;pending\&quot; | [optional] 
-**scan_id** | **str** | Unique identifier for the scan | [optional] 
-**result** | [**ScanResponse**](ScanResponse.md) |  | [optional] 
+**req_id** | **int** | Unique identifier of an individual element sent in the batch scan request | [optional]
+**status** | **str** | Scan request processing state such as \&quot;complete\&quot; or \&quot;pending\&quot; | [optional]
+**scan_id** | **str** | Unique identifier for the scan | [optional]
+**result** | [**ScanResponse**](ScanResponse.md) |  | [optional]
 
 ## Example
 
@@ -28,5 +28,3 @@ scan_id_result_dict = scan_id_result_instance.to_dict()
 scan_id_result_from_dict = ScanIdResult.from_dict(scan_id_result_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
-
-

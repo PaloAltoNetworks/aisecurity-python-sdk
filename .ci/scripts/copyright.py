@@ -85,11 +85,13 @@ def main():
     for f in python_files:
         if is_empty_file(f):
             continue
+        if not f.is_absolute():
+            f = f.absolute()
         file_text = f.read_text()
         search_chunk = file_text[:HEAD_CHARS_LENGTH]
 
         has_cw = has_copyright(f, text=search_chunk)
-        needs_cw = needs_copyright(f, text=search_chunk)
+        needs_cw = needs_copyright(f, search_chunk=search_chunk)
 
         if has_cw and not needs_cw:
             files_to_strip_copyright.append(f)
@@ -134,8 +136,12 @@ def has_copyright(f: Path, text: Optional[str] = None) -> bool:
 @cache
 def needs_copyright(f: Path, search_chunk: Optional[str] = None) -> bool:
     for prefix in skip_copyright_prefixes:
-        if f.relative_to(git_root()).is_relative_to(prefix):
-            log.debug(f"file={f} needs_copyright=False relative_to={prefix}")
+        try:
+            if f.relative_to(git_root(), walk_up=True).is_relative_to(prefix):
+                log.debug(f"file={f} needs_copyright=False relative_to={prefix}")
+                return False
+        except ValueError:
+            log.exception(f"Failed to determine if prefix {prefix} should be ignored")
             return False
     if search_chunk is None:
         text = f.read_text()
@@ -188,6 +194,8 @@ def strip_coding_header(lines: list[str]) -> list[str]:
 
 
 def joinlines(lines: list[str]) -> str:
+    if lines[-1] != "":
+        lines.append("")
     return "\n".join(lines)
 
 
@@ -213,11 +221,19 @@ def insert_copyright(f: Path, copyright_text: str | None = None):
 
 
 def strip_copyright(f: Path, text: str | None, copyright_text: str | None = None):
+    if not text:
+        text = f.read_text()
+    if not copyright_text:
+        copyright_text = get_copyright()
     new_text = text.replace(copyright_text, "")
     log.info(f"file={f} removed_copyright")
     f.write_text(new_text)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(format="%(message)s", level=logging.DEBUG, handlers=[RichHandler()])
+    logging.basicConfig(
+        format="%(message)s",
+        level=logging.DEBUG,
+        handlers=[RichHandler(rich_tracebacks=True, tracebacks_show_locals=True)],
+    )
     main()

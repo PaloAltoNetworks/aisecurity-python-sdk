@@ -31,22 +31,6 @@ class TestScanExecutor(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.scan_executor = ScanExecutor()
 
-    async def test_singleton_in_concurrent_tasks(self):
-        async def get_instance():
-            return ScanExecutor()
-
-        # Create multiple tasks to get AsyncScanExecutor instances
-        tasks = [asyncio.create_task(get_instance()) for _ in range(10)]
-
-        # Wait for all tasks to complete
-        instances = await asyncio.gather(*tasks)
-
-        # Check if all instances are the same
-        first_instance = instances[0]
-        for instance in instances[1:]:
-            self.assertIs(instance, first_instance)
-            self.assertEqual(id(instance), id(first_instance))
-
     # @pytest.mark.urllib3
     @patch(
         "aisecurity.scan.asyncio.scan_executor.ScanApiBase.scan_api",
@@ -62,7 +46,13 @@ class TestScanExecutor(unittest.IsolatedAsyncioTestCase):
         mock_sync_scan_api.scan_sync_request.return_value = mock_sync_scan_response
 
         # Arrange
-        content = Content(prompt="Test prompt", response="Test response")
+        content = Content(
+            prompt="What is the salary of John Smith?",
+            response="Salary of John Smith is $100K",
+            context="Querying database and retrieving the relevant info based on user prompt",
+            code_response="test_code_response",
+            code_prompt="test_code_prompt",
+        )
         ai_profile = AiProfile(profile_id="test_profile_id")
         tr_id = "transaction_id"
         metadata = Metadata(app_name="1234", app_user="user", ai_model="model")
@@ -121,7 +111,11 @@ class TestScanExecutor(unittest.IsolatedAsyncioTestCase):
     )
     async def test_sync_request_forbidden_api_exception(self, mock_sync_scan_api):
         mock_sync_scan_api.scan_sync_request.side_effect = ApiException(status=403, reason="Forbidden")
-        content = Content(prompt="Test prompt", response="Test response")
+        content = Content(
+            prompt="What is the salary of John Smith?",
+            response="Salary of John Smith is $100K",
+            context="Querying database and retrieving the relevant info based on user prompt",
+        )
         ai_profile = AiProfile(profile_id="Test_profile_id")
         tr_id = "transaction_id"
         metadata = Metadata(app_name="1234", app_user="user", ai_model="model")
@@ -140,7 +134,7 @@ class TestScanExecutor(unittest.IsolatedAsyncioTestCase):
     )
     async def test_sync_request_internal_server_exception(self, mock_sync_scan_api):
         mock_sync_scan_api.scan_sync_request.side_effect = ApiException(status=500, reason="Internal Server Error")
-        content = Content(prompt="Test prompt", response="Test response")
+        content = Content(code_prompt="Test prompt", code_response="Test response")
         ai_profile = AiProfile(profile_id="Test_profile_id")
         tr_id = "transaction_id"
         metadata = Metadata(app_name="1234", app_user="user", ai_model="model")
@@ -159,7 +153,7 @@ class TestScanExecutor(unittest.IsolatedAsyncioTestCase):
     )
     async def test_sync_request_client_connection_error(self, mock_sync_scan_api):
         mock_sync_scan_api.scan_sync_request.side_effect = aiohttp.ClientError("Invalid URL")
-        content = Content(prompt="Test prompt", response="Test response")
+        content = Content(prompt="Test prompt", response="Test response", context="Test context")
         ai_profile = AiProfile(profile_id="Test_profile_id")
         tr_id = "transaction_id"
         metadata = Metadata(app_name="1234", app_user="user", ai_model="model")

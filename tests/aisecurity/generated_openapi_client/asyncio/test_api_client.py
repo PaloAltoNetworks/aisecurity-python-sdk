@@ -42,10 +42,10 @@ class TestApiClient(unittest.IsolatedAsyncioTestCase):
         header_params = {HEADER_API_KEY: "test_api_key"}
         body = {"key": "value"}
         post_params = None
-        _request_timeout = 30
+        request_timeout = 30
 
         # Call the method
-        response = await self.api_client.call_api(method, url, header_params, body, post_params, _request_timeout)
+        response = await self.api_client.call_api(method, url, header_params, body, post_params, request_timeout)
 
         # Assertions
         self.assertIsInstance(response, RESTResponse)
@@ -74,7 +74,7 @@ class TestApiClient(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(call_args[0][1], url)
         self.assertEqual(call_args[1]["body"], body)
         self.assertEqual(call_args[1]["post_params"], post_params)
-        self.assertEqual(call_args[1]["_request_timeout"], _request_timeout)
+        self.assertEqual(call_args[1]["_request_timeout"], request_timeout)
 
     async def test_call_api_exception(self):
         # Mock the REST client to raise an exception

@@ -65,7 +65,7 @@ class _Configuration(BaseLogger):
                 ErrorType.MISSING_VARIABLE,
             )
 
-        if num_retries:
+        if num_retries is not None:
             self.num_retries = num_retries
 
     def _log_and_raise(self, message, error_type):

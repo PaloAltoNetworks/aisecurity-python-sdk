@@ -43,7 +43,13 @@ class TestScanExecutor(unittest.TestCase):
             action="block",
         )
 
-        content = Content(prompt="Test prompt", response="Test response")
+        content = Content(
+            prompt="Test prompt",
+            response="Test response",
+            context="Test Content",
+            code_response="Test Code Response",
+            code_prompt="Test Code Prompt",
+        )
         ai_profile = AiProfile()
         tr_id = "1234"
         metadata = Metadata(app_name="1234", app_user="user", ai_model="model")
@@ -58,6 +64,9 @@ class TestScanExecutor(unittest.TestCase):
         self.assertEqual(len(call_args.contents), 1)
         self.assertEqual(call_args.contents[0].prompt, "Test prompt")
         self.assertEqual(call_args.contents[0].response, "Test response")
+        self.assertEqual(call_args.contents[0].context, "Test Content")
+        self.assertEqual(call_args.contents[0].code_prompt, "Test Code Prompt")
+        self.assertEqual(call_args.contents[0].code_response, "Test Code Response")
         self.assertEqual(call_args.ai_profile, ai_profile)
         self.assertEqual(call_args.tr_id, tr_id)
         self.assertEqual(call_args.metadata, metadata)
@@ -139,7 +148,11 @@ class TestScanExecutor(unittest.TestCase):
     @patch("aisecurity.scan.inline.scan_executor.ScanApiBase.scan_api")
     def test_async_request_forbidden_exception(self, mock_scan_api):
         mock_scan_api.scan_sync_request.side_effect = ApiException(status=403, reason="Forbidden")
-        content = Content(prompt="Test prompt", response="Test response")
+        content = Content(
+            prompt="What is the salary of John Smith?",
+            response="Salary of John Smith is $100K",
+            context="Querying database and retrieving the relevant info based on user prompt",
+        )
         ai_profile = AiProfile(profile_id="Test_profile_id")
         tr_id = "1234"
         metadata = Metadata(app_name="1234", app_user="user", ai_model="model")
@@ -154,7 +167,7 @@ class TestScanExecutor(unittest.TestCase):
     @patch("aisecurity.scan.inline.scan_executor.ScanApiBase.scan_api")
     def test_async_request_authorisation_exception(self, mock_scan_api):
         mock_scan_api.scan_sync_request.side_effect = ApiException(status=401, reason="Unauthorized")
-        content = Content(prompt="Test prompt", response="Test response")
+        content = Content(code_prompt="Test prompt", code_response="Test response")
         ai_profile = AiProfile(profile_id="Test_profile_id")
         tr_id = "1234"
         metadata = Metadata(app_name="1234", app_user="user", ai_model="model")
@@ -169,7 +182,7 @@ class TestScanExecutor(unittest.TestCase):
     @patch("aisecurity.scan.inline.scan_executor.ScanApiBase.scan_api")
     def test_async_request_connection_error(self, mock_scan_api):
         mock_scan_api.scan_sync_request.side_effect = ConnectionError("Network UnReachable")
-        content = Content(prompt="Test prompt", response="Test response")
+        content = Content(prompt="Test prompt", code_response="Test response")
         ai_profile = AiProfile(profile_id="Test_profile_id")
         tr_id = "1234"
         metadata = Metadata(app_name="1234", app_user="user", ai_model="model")
@@ -215,7 +228,11 @@ class TestScanExecutor(unittest.TestCase):
     @patch("aisecurity.scan.inline.scan_executor.ScanApiBase.scan_api")
     def test_async_request_type_error(self, mock_scan_api):
         mock_scan_api.scan_sync_request.side_effect = TypeError("Invalid Type")
-        content = Content(prompt="Test prompt", response="Test response")
+        content = Content(
+            prompt="What is the salary of John Smith?",
+            response="Salary of John Smith is $100K",
+            context="Querying database and retrieving the relevant info based on user prompt",
+        )
         ai_profile = AiProfile(profile_id="Test_profile_id")
         tr_id = "1234"
         metadata = Metadata(app_name="1234", app_user="user", ai_model="model")

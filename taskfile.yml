@@ -4,6 +4,7 @@ includes:
   ci:
     taskfile: .ci/taskfile.ci.yml
 
+set: [nounset, pipefail, errexit, xtrace]
 vars:
   PROJECT_NAME: python-aisec
   REPO_ROOT:
@@ -59,11 +60,13 @@ tasks:
 
   setup:pre-commit:
     desc: "Install pre-commit and pre-commit hooks"
+    # language=sh
     cmds:
       - uv tool install pre-commit
       - uv tool run pre-commit install --install-hooks
     preconditions:
       - command -v uv
+    # language=sh
     status:
       - command -v pre-commit
       - test -f .git/hooks/pre-commit
@@ -151,15 +154,6 @@ tasks:
     preconditions:
       - command -v uv
 
-  pip:compile:
-    desc: "Generate requirements.txt from requirements.in"
-    # language=sh
-    cmds:
-      - uv pip compile --python-version {{.PYTHON_MIN_VERSION}} requirements.in -o requirements.txt
-      - uv sync --refresh --all-extras
-    preconditions:
-      - command -v uv
-
   _hatch:
     internal: true
     run: once
@@ -181,13 +175,16 @@ tasks:
     # language=sh
     cmds:
       - |
-        set -xe
         cd "{{.REPO_ROOT}}"
         uv tool run hatch clean
         rm -rf .mypy_cache/ .pytest_cache/ .coverage
-        find dist \! -name .gitignore -mindepth 1 | xargs rm -rf
-        find * -type d -name __pycache__ -exec rm -rf "{}" "+"
-        find * -type f \( -name "*.pyc" -or -name "*.log" -or -name "*.tmp" \) -exec rm -f "{}" "+"
+        [[ -d dist ]] && find dist \! -name .gitignore -mindepth 1 | xargs rm -rf;
+        find . -type d \( \
+              -name __pycache__ \
+          -or -name ".*cache" \
+          -or -name ".coverage*" \
+        \) -exec rm -rf "{}" "+"
+        find . -type f \( -name "*.pyc" -or -name "*.log" -or -name "*.tmp" \) -exec rm -f "{}" "+"
     preconditions:
       - command -v hatch
 
@@ -215,13 +212,17 @@ tasks:
     cmds:
       - uv run --frozen hatch test --all --cover
 
-  type-check:
+  test:mypy:
     desc: "Run mypy type-checking tests"
-    deps:
-      - task: _hatch
     # language=sh
     cmds:
-      - uv run --frozen hatch env run -e mypy check {{.CLI_ARGS}}
+      - uv run --all-extras --frozen mypy check {{.CLI_ARGS}}
+
+  test:pyright:
+    desc: "Run mypy & pyright type-checking tests"
+    # language=sh
+    cmds:
+      - uv run --all-extras --frozen pyright {{.CLI_ARGS}}
 
   build:
     desc: "Build the project artifacts"
@@ -238,7 +239,6 @@ tasks:
     desc: "Build and Inspect project artifacts"
     deps:
       - task: build
-    set: [xtrace, nounset, pipefail, errexit]
     # language=sh
     cmds:
       - |
@@ -275,7 +275,7 @@ tasks:
     requires:
       vars:
         - HATCH_INDEX_REPO
-    set: [xtrace, nounset, pipefail, errexit]
+    # language=sh
     cmds:
       - uv run --frozen .ci/scripts/check_version.py --index={{.HATCH_INDEX_REPO}}
       - uv run --frozen hatch publish
@@ -309,21 +309,18 @@ tasks:
 
   fmt:yaml:
     desc: "Automatically format YAML files"
-    set: [xtrace, nounset, pipefail, errexit]
     # language=sh
     cmds:
       - yamlfmt -conf {{.REPO_ROOT}}/.yamlfmt.yaml -gitignore_excludes -dstar "**.yaml" "**.yml"
 
   lint:
-    desc: "ruff check --fix"
-    set: [xtrace, nounset, pipefail, errexit]
+    desc: "ruff check --fix --preview --unsafe-fixes"
     # language=sh
     cmds:
-      - ruff check --fix --unsafe-fixes
+      - ruff check --fix --preview --unsafe-fixes
 
   pre-commit:
     desc: "Run pre-commit hooks"
-    set: [xtrace, nounset, pipefail, errexit]
     # language=sh
     cmds:
       - uv tool run pre-commit run -v
@@ -338,34 +335,28 @@ tasks:
 
   sec:bandit:
     desc: "Run Bandit security linter"
-    vars: &bandit-vars
+    vars:
       BANDIT_SEVERITY_LEVEL: medium
       BANDIT_CONFIDENCE_LEVEL: medium
       BANDIT_SCAN_PATH: >-
         {{.REPO_ROOT}}
     cmds:
       # language=sh
-      - uv tool install "bandit[toml]"
-      # language=sh
       - >-
-        uv run --all-extras --frozen
-        bandit
+        uvx --from="bandit[toml]" bandit
         --configfile pyproject.toml
         --confidence-level {{.BANDIT_CONFIDENCE_LEVEL}}
         --severity-level {{.BANDIT_SEVERITY_LEVEL}}
         --recursive {{.BANDIT_SCAN_PATH}}
-      - task: ci:bandit
-        vars: *bandit-vars
     preconditions:
       - command -v uv
 
   sec:trufflehog:
+    desc: "Run Trufflehog security linter"
     # language=sh
     cmds:
-      - uv tool install trufflehog
       - >-
-        uv run --all-extras --frozen
-        trufflehog --regex --entropy=true
+        uvx trufflehog --regex --entropy=true
         --exclude_paths .trufflehogignore .
     preconditions:
       - command -v git
@@ -373,6 +364,7 @@ tasks:
 
   readme:generate-toc:
     desc: Generate the Table of Contents in README.md
+    # language=sh
     cmds:
       - uvx --from md-toc md_toc --in-place cmark README.md
     preconditions:
@@ -381,14 +373,12 @@ tasks:
 
   readme:render:
     desc: Render README.md using PyPi's Markdown to HTML Renderer (readme-renderer)
-    set: [xtrace, nounset, pipefail, errexit]
     deps:
       - task: readme:generate-toc
     # language=sh
     cmds:
       - mkdir -p .local
-      - uv sync --frozen
-      - .venv/bin/python3 -m readme_renderer -f md README.md -o .local/index.html
+      - uv run --all-extras --frozen -m readme_renderer -f md README.md -o .local/index.html
       - screen -dmS http.server .venv/bin/python3 -m http.server -d .local
       - open http://[::]:8000
       - screen -r http.server
@@ -414,7 +404,8 @@ tasks:
       - |
         rsync \
           {{.CLI_ARGS}} \
-          --update --recursive \
+          --checksum --recursive \
+         # --update --recursive \
           --links --safe-links --perms --times --crtimes --open-noatime --group --owner \
           --one-file-system --delete --fsync \
           --debug=FILTER \
@@ -438,6 +429,8 @@ tasks:
           * .* \
           "{{.DEST_DIR}}"
     preconditions:
+      - sh: test -n "{{.DEST_DIR}}"
+        msg: "Destination directory must be set"
       - sh: test -d "{{.DEST_DIR}}"
         msg: "Destination directory {{.DEST_DIR}} does not exist"
     requires:

@@ -32,56 +32,32 @@ import pprint
 import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Self
 
+from aisecurity.generated_openapi_client.models.agent_entry_object import (
+    AgentEntryObject,
+)
 
-class ResponseDetected(BaseModel):
+
+class AgentReportObject(BaseModel):
     """
-    ResponseDetected
+    AgentReportObject
     """  # noqa: E501
 
-    url_cats: Optional[StrictBool] = Field(
+    model_verdict: Optional[StrictStr] = Field(
         default=None,
-        description="Indicates whether response contains any malicious URLs",
+        description='Detection service verdict such as "malicious" or "benign"',
     )
-    dlp: Optional[StrictBool] = Field(
+    agent_framework: Optional[StrictStr] = Field(
         default=None,
-        description="Indicates whether response contains any sensitive information",
+        description='Agent builder framework used to build Agents such as "AWS_Agent_Builder", "Microsoft_copilot_studio" and others',
     )
-    db_security: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any database security threats",
-    )
-    toxic_content: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any harmful content",
-    )
-    malicious_code: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any malicious code",
-    )
-    agent: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any Agent related threats",
-    )
-    ungrounded: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any ungrounded content",
-    )
-    topic_violation: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any content violates topic guardrails",
-    )
+    agent_patterns: Optional[List[AgentEntryObject]] = None
     __properties: ClassVar[List[str]] = [
-        "url_cats",
-        "dlp",
-        "db_security",
-        "toxic_content",
-        "malicious_code",
-        "agent",
-        "ungrounded",
-        "topic_violation",
+        "model_verdict",
+        "agent_framework",
+        "agent_patterns",
     ]
 
     model_config = ConfigDict(
@@ -101,7 +77,7 @@ class ResponseDetected(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of ResponseDetected from a JSON string"""
+        """Create an instance of AgentReportObject from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -121,11 +97,18 @@ class ResponseDetected(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of each item in agent_patterns (list)
+        _items = []
+        if self.agent_patterns:
+            for _item_agent_patterns in self.agent_patterns:
+                if _item_agent_patterns:
+                    _items.append(_item_agent_patterns.to_dict())
+            _dict["agent_patterns"] = _items
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of ResponseDetected from a dict"""
+        """Create an instance of AgentReportObject from a dict"""
         if obj is None:
             return None
 
@@ -133,13 +116,10 @@ class ResponseDetected(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "url_cats": obj.get("url_cats"),
-            "dlp": obj.get("dlp"),
-            "db_security": obj.get("db_security"),
-            "toxic_content": obj.get("toxic_content"),
-            "malicious_code": obj.get("malicious_code"),
-            "agent": obj.get("agent"),
-            "ungrounded": obj.get("ungrounded"),
-            "topic_violation": obj.get("topic_violation"),
+            "model_verdict": obj.get("model_verdict"),
+            "agent_framework": obj.get("agent_framework"),
+            "agent_patterns": [AgentEntryObject.from_dict(_item) for _item in obj["agent_patterns"]]
+            if obj.get("agent_patterns") is not None
+            else None,
         })
         return _obj

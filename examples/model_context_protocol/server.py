@@ -1,4 +1,4 @@
-#!/usr/bin/env -S uv run fastmcp run -t sse # noqa: CPY001
+#!/usr/bin/env -S uv run fastmcp run -t sse
 """
 Palo Alto Networks AI Runtime Security (AIRS) API - Model Context Protocol (MCP) Server Example
 

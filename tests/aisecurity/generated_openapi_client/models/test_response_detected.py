@@ -50,7 +50,15 @@ class TestResponseDetected(unittest.TestCase):
         # uncomment below to create an instance of `ResponseDetected`
 
         if include_optional:
-            return ResponseDetected(url_cats=True, dlp=True)
+            return ResponseDetected(
+                url_cats=True,
+                dlp=True,
+                ungrounded=True,
+                toxic_content=True,
+                topic_violation=True,
+                db_security=True,
+                agent=True,
+            )
         else:
             return ResponseDetected()
 
@@ -62,21 +70,47 @@ class TestResponseDetected(unittest.TestCase):
         self.assertIsInstance(response_detected, ResponseDetected)
         self.assertFalse(response_detected.url_cats)
         self.assertFalse(response_detected.dlp)
+        self.assertFalse(response_detected.ungrounded)
+        self.assertFalse(response_detected.toxic_content)
+        self.assertFalse(response_detected.topic_violation)
+        self.assertFalse(response_detected.db_security)
+        self.assertFalse(response_detected.agent)
 
         # Assertions for optional instance
         self.assertIsInstance(response_detected_optional, ResponseDetected)
         self.assertTrue(response_detected_optional.url_cats)
         self.assertTrue(response_detected_optional.dlp)
+        self.assertTrue(response_detected_optional.ungrounded)
+        self.assertTrue(response_detected_optional.toxic_content)
+        self.assertTrue(response_detected_optional.topic_violation)
+        self.assertTrue(response_detected_optional.db_security)
+        self.assertTrue(response_detected_optional.agent)
 
         # Additional assertions to ensure correct behavior
         self.assertNotEqual(response_detected, response_detected_optional)
         self.assertEqual(response_detected, ResponseDetected())
-        self.assertEqual(response_detected_optional, ResponseDetected(url_cats=True, dlp=True))
+        self.assertEqual(
+            response_detected_optional,
+            ResponseDetected(
+                url_cats=True,
+                dlp=True,
+                ungrounded=True,
+                toxic_content=True,
+                topic_violation=True,
+                db_security=True,
+                agent=True,
+            ),
+        )
 
         # Test individual attribute setting
         custom_response = ResponseDetected(url_cats=True, dlp=False)
         self.assertTrue(custom_response.url_cats)
         self.assertFalse(custom_response.dlp)
+        self.assertFalse(custom_response.ungrounded)
+        self.assertFalse(custom_response.toxic_content)
+        self.assertFalse(custom_response.topic_violation)
+        self.assertFalse(custom_response.db_security)
+        self.assertFalse(custom_response.agent)
 
 
 if __name__ == "__main__":

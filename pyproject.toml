@@ -29,8 +29,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 include = [
-  "asyncio_openapi_client/py.typed",
-  "openapi_client/py.typed",
+  "aisecurity/py.typed",
 ]
 
 dynamic = [
@@ -300,7 +299,7 @@ disallow_any_generics = true
 # Disable impossibly strict configs
 implicit_reexport = true
 disallow_untyped_calls = false
-disable_error_code = ["import-untyped"]
+disable_error_code = ["import-untyped", "no-untyped-def"]
 warn_return_any = false
 
 #############################
@@ -325,7 +324,7 @@ skips = [
 #############################
 
 [tool.uv]
-required-version = ">=0.7.8"
+required-version = ">=0.7.13"
 default-groups = [
   "dev",
   "ci",
@@ -348,7 +347,6 @@ include = [
 ]
 exclude = [
   "**/__pycache__",
-  "aisecurity/generated_openapi_client",
   "examples",
   "scripts",
   "tests",

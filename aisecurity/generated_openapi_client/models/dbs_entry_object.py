@@ -32,57 +32,28 @@ import pprint
 import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool
+from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing_extensions import Self
 
 
-class ResponseDetected(BaseModel):
+class DbsEntryObject(BaseModel):
     """
-    ResponseDetected
+    DbsEntryObject
     """  # noqa: E501
 
-    url_cats: Optional[StrictBool] = Field(
+    sub_type: Optional[StrictStr] = Field(
         default=None,
-        description="Indicates whether response contains any malicious URLs",
+        description='Database security sql query sub-type, such as "create", "read", "update", or "delete"',
     )
-    dlp: Optional[StrictBool] = Field(
+    verdict: Optional[StrictStr] = Field(
         default=None,
-        description="Indicates whether response contains any sensitive information",
+        description='Detection service verdict such as "malicious" or "benign"',
     )
-    db_security: Optional[StrictBool] = Field(
+    action: Optional[StrictStr] = Field(
         default=None,
-        description="Indicates whether response contains any database security threats",
+        description='The action is set to "block" or "allow" based on AI security profile used for scanning',
     )
-    toxic_content: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any harmful content",
-    )
-    malicious_code: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any malicious code",
-    )
-    agent: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any Agent related threats",
-    )
-    ungrounded: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any ungrounded content",
-    )
-    topic_violation: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any content violates topic guardrails",
-    )
-    __properties: ClassVar[List[str]] = [
-        "url_cats",
-        "dlp",
-        "db_security",
-        "toxic_content",
-        "malicious_code",
-        "agent",
-        "ungrounded",
-        "topic_violation",
-    ]
+    __properties: ClassVar[List[str]] = ["sub_type", "verdict", "action"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -101,7 +72,7 @@ class ResponseDetected(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of ResponseDetected from a JSON string"""
+        """Create an instance of DbsEntryObject from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -125,7 +96,7 @@ class ResponseDetected(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of ResponseDetected from a dict"""
+        """Create an instance of DbsEntryObject from a dict"""
         if obj is None:
             return None
 
@@ -133,13 +104,8 @@ class ResponseDetected(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "url_cats": obj.get("url_cats"),
-            "dlp": obj.get("dlp"),
-            "db_security": obj.get("db_security"),
-            "toxic_content": obj.get("toxic_content"),
-            "malicious_code": obj.get("malicious_code"),
-            "agent": obj.get("agent"),
-            "ungrounded": obj.get("ungrounded"),
-            "topic_violation": obj.get("topic_violation"),
+            "sub_type": obj.get("sub_type"),
+            "verdict": obj.get("verdict"),
+            "action": obj.get("action"),
         })
         return _obj

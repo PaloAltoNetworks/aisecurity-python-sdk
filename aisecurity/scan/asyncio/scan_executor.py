@@ -57,7 +57,15 @@ class ScanExecutor(ScanApiBase):
             return await self.scan_api.scan_sync_request(
                 scan_request=ScanRequest(
                     tr_id=tr_id,
-                    contents=[ScanRequestContentsInner(prompt=content.prompt, response=content.response)],
+                    contents=[
+                        ScanRequestContentsInner(
+                            prompt=content.prompt,
+                            response=content.response,
+                            context=content.context,
+                            code_prompt=content.code_prompt,
+                            code_response=content.code_response,
+                        )
+                    ],
                     ai_profile=ai_profile,
                     metadata=metadata,
                 ),

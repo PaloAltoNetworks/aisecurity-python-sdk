@@ -46,8 +46,12 @@ class UrlfEntryObject(BaseModel):
         default=None,
         description='Risk level associated with the URL, such as "high", "medium", or "low"',
     )
+    action: Optional[StrictStr] = Field(
+        default=None,
+        description='Action associated with the URL Category, such as "allow", "block", or "unknown"',
+    )
     categories: Optional[List[StrictStr]] = Field(default=None, description="Categories associated with the URL")
-    __properties: ClassVar[List[str]] = ["url", "risk_level", "categories"]
+    __properties: ClassVar[List[str]] = ["url", "risk_level", "action", "categories"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -100,6 +104,7 @@ class UrlfEntryObject(BaseModel):
         _obj = cls.model_validate({
             "url": obj.get("url"),
             "risk_level": obj.get("risk_level"),
+            "action": obj.get("action"),
             "categories": obj.get("categories"),
         })
         return _obj

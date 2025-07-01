@@ -32,57 +32,18 @@ import pprint
 import re  # noqa: F401
 from typing import Any, ClassVar, Dict, List, Optional, Set
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool
+from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
 from typing_extensions import Self
 
 
-class ResponseDetected(BaseModel):
+class PatternDetections(BaseModel):
     """
-    ResponseDetected
+    PatternDetections
     """  # noqa: E501
 
-    url_cats: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any malicious URLs",
-    )
-    dlp: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any sensitive information",
-    )
-    db_security: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any database security threats",
-    )
-    toxic_content: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any harmful content",
-    )
-    malicious_code: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any malicious code",
-    )
-    agent: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any Agent related threats",
-    )
-    ungrounded: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any ungrounded content",
-    )
-    topic_violation: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any content violates topic guardrails",
-    )
-    __properties: ClassVar[List[str]] = [
-        "url_cats",
-        "dlp",
-        "db_security",
-        "toxic_content",
-        "malicious_code",
-        "agent",
-        "ungrounded",
-        "topic_violation",
-    ]
+    pattern: Optional[StrictStr] = Field(default=None, description="Matched pattern")
+    locations: Optional[List[List[StrictInt]]] = Field(default=None, description="Array of start, end offsets")
+    __properties: ClassVar[List[str]] = ["pattern", "locations"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -101,7 +62,7 @@ class ResponseDetected(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of ResponseDetected from a JSON string"""
+        """Create an instance of PatternDetections from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -125,21 +86,12 @@ class ResponseDetected(BaseModel):
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of ResponseDetected from a dict"""
+        """Create an instance of PatternDetections from a dict"""
         if obj is None:
             return None
 
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
 
-        _obj = cls.model_validate({
-            "url_cats": obj.get("url_cats"),
-            "dlp": obj.get("dlp"),
-            "db_security": obj.get("db_security"),
-            "toxic_content": obj.get("toxic_content"),
-            "malicious_code": obj.get("malicious_code"),
-            "agent": obj.get("agent"),
-            "ungrounded": obj.get("ungrounded"),
-            "topic_violation": obj.get("topic_violation"),
-        })
+        _obj = cls.model_validate({"pattern": obj.get("pattern"), "locations": obj.get("locations")})
         return _obj

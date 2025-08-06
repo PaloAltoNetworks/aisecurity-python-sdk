@@ -405,7 +405,7 @@ tasks:
         rsync \
           {{.CLI_ARGS}} \
           --checksum --recursive \
-         # --update --recursive \
+          #--update --recursive \
           --links --safe-links --perms --times --crtimes --open-noatime --group --owner \
           --one-file-system --delete --fsync \
           --debug=FILTER \

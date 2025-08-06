@@ -1,18 +1,4 @@
-# Copyright (c) 2025, Palo Alto Networks
-#
-# Licensed under the Polyform Internal Use License 1.0.0 (the "License");
-# you may not use this file except in compliance with the License.
-#
-# You may obtain a copy of the License at:
-#
-# https://polyformproject.org/licenses/internal-use/1.0.0
-# (or)
-# https://github.com/polyformproject/polyform-licenses/blob/76a278c4/PolyForm-Internal-Use-1.0.0.md
-#
-# As far as the law allows, the software comes as is, without any warranty
-# or condition, and the licensor will not be liable to you for any damages
-# arising out of these terms or the use or nature of the software, under
-# any kind of legal claim.
+# coding: utf-8
 
 """
 AISec API service
@@ -26,21 +12,20 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
+import json
+
 from datetime import datetime
-from typing import Any, ClassVar, Dict, List, Optional, Set
-
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing_extensions import Self
-
+from typing import Any, ClassVar, Dict, List, Optional
 from aisecurity.generated_openapi_client.models.masked_data import MaskedData
 from aisecurity.generated_openapi_client.models.prompt_detected import PromptDetected
-from aisecurity.generated_openapi_client.models.response_detected import (
-    ResponseDetected,
-)
+from aisecurity.generated_openapi_client.models.prompt_detection_details import PromptDetectionDetails
+from aisecurity.generated_openapi_client.models.response_detected import ResponseDetected
+from aisecurity.generated_openapi_client.models.response_detection_details import ResponseDetectionDetails
+from typing import Optional, Set
+from typing_extensions import Self
 
 
 class ScanResponse(BaseModel):
@@ -52,8 +37,7 @@ class ScanResponse(BaseModel):
     scan_id: StrictStr = Field(description="Unique identifier for the scan")
     tr_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for the transaction")
     profile_id: Optional[StrictStr] = Field(
-        default=None,
-        description="Unique identifier of the AI security profile used for scanning",
+        default=None, description="Unique identifier of the AI security profile used for scanning"
     )
     profile_name: Optional[StrictStr] = Field(default=None, description="AI security profile name used for scanning")
     category: StrictStr = Field(description='Category of the scanned content verdicts such as "malicious" or "benign"')
@@ -64,6 +48,8 @@ class ScanResponse(BaseModel):
     response_detected: Optional[ResponseDetected] = None
     prompt_masked_data: Optional[MaskedData] = None
     response_masked_data: Optional[MaskedData] = None
+    prompt_detection_details: Optional[PromptDetectionDetails] = None
+    response_detection_details: Optional[ResponseDetectionDetails] = None
     created_at: Optional[datetime] = Field(default=None, description="Scan request timestamp")
     completed_at: Optional[datetime] = Field(default=None, description="Scan completion timestamp")
     __properties: ClassVar[List[str]] = [
@@ -78,6 +64,8 @@ class ScanResponse(BaseModel):
         "response_detected",
         "prompt_masked_data",
         "response_masked_data",
+        "prompt_detection_details",
+        "response_detection_details",
         "created_at",
         "completed_at",
     ]
@@ -131,6 +119,12 @@ class ScanResponse(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of response_masked_data
         if self.response_masked_data:
             _dict["response_masked_data"] = self.response_masked_data.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of prompt_detection_details
+        if self.prompt_detection_details:
+            _dict["prompt_detection_details"] = self.prompt_detection_details.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of response_detection_details
+        if self.response_detection_details:
+            _dict["response_detection_details"] = self.response_detection_details.to_dict()
         return _dict
 
     @classmethod
@@ -161,6 +155,12 @@ class ScanResponse(BaseModel):
             else None,
             "response_masked_data": MaskedData.from_dict(obj["response_masked_data"])
             if obj.get("response_masked_data") is not None
+            else None,
+            "prompt_detection_details": PromptDetectionDetails.from_dict(obj["prompt_detection_details"])
+            if obj.get("prompt_detection_details") is not None
+            else None,
+            "response_detection_details": ResponseDetectionDetails.from_dict(obj["response_detection_details"])
+            if obj.get("response_detection_details") is not None
             else None,
             "created_at": obj.get("created_at"),
             "completed_at": obj.get("completed_at"),

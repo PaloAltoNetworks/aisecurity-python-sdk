@@ -1,18 +1,4 @@
-# Copyright (c) 2025, Palo Alto Networks
-#
-# Licensed under the Polyform Internal Use License 1.0.0 (the "License");
-# you may not use this file except in compliance with the License.
-#
-# You may obtain a copy of the License at:
-#
-# https://polyformproject.org/licenses/internal-use/1.0.0
-# (or)
-# https://github.com/polyformproject/polyform-licenses/blob/76a278c4/PolyForm-Internal-Use-1.0.0.md
-#
-# As far as the law allows, the software comes as is, without any warranty
-# or condition, and the licensor will not be liable to you for any damages
-# arising out of these terms or the use or nature of the software, under
-# any kind of legal claim.
+# coding: utf-8
 
 """
 AISec API service
@@ -26,20 +12,17 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing_extensions import Self
-
+from typing import Any, ClassVar, Dict, List, Optional
 from aisecurity.generated_openapi_client.models.ai_profile import AiProfile
 from aisecurity.generated_openapi_client.models.metadata import Metadata
-from aisecurity.generated_openapi_client.models.scan_request_contents_inner import (
-    ScanRequestContentsInner,
-)
+from aisecurity.generated_openapi_client.models.scan_request_contents_inner import ScanRequestContentsInner
+from typing import Optional, Set
+from typing_extensions import Self
 
 
 class ScanRequest(BaseModel):
@@ -48,8 +31,7 @@ class ScanRequest(BaseModel):
     """  # noqa: E501
 
     tr_id: Optional[StrictStr] = Field(
-        default=None,
-        description="Unique identifier for the transaction correlating prompt and response",
+        default=None, description="Unique identifier for the transaction correlating prompt and response"
     )
     ai_profile: AiProfile
     metadata: Optional[Metadata] = None

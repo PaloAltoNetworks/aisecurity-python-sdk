@@ -15,14 +15,17 @@
 # any kind of legal claim.
 
 import os
+import warnings
 from typing import Optional
 
 from aisecurity.constants.base import (
     AI_SEC_API_ENDPOINT,
     AI_SEC_API_KEY,
+    AI_SEC_API_TOKEN,
     DEFAULT_ENDPOINT,
     MAX_API_KEY_LENGTH,
     MAX_NUMBER_OF_RETRIES,
+    MAX_TOKEN_LENGTH,
 )
 from aisecurity.exceptions import AISecSDKException, ErrorType
 from aisecurity.logger import BaseLogger
@@ -33,23 +36,17 @@ class _Configuration(BaseLogger):
         super().__init__()
         self._api_endpoint = DEFAULT_ENDPOINT
         self._api_key = None
+        self._api_token = None
         self._num_retries = MAX_NUMBER_OF_RETRIES
 
     def init(
         self,
         *,
         api_key: Optional[str] = None,
+        api_token: Optional[str] = None,
         api_endpoint: Optional[str] = None,
         num_retries: Optional[int] = None,
-        **kwargs,
     ):
-        deprecated_kwargs = ["project", "logger_level", "logger"]
-        for dkwarg in deprecated_kwargs:
-            if dkwarg in kwargs:
-                raise DeprecationWarning(f"{dkwarg} keyword is no longer supported in aisecurity Configuration init()")
-
-        self.logger.info(f"event={self.init.__name__} action=configuration_initialized")
-
         if api_endpoint:
             self.api_endpoint = api_endpoint
         elif api_endpoint := os.getenv(AI_SEC_API_ENDPOINT):
@@ -59,9 +56,15 @@ class _Configuration(BaseLogger):
             self.api_key = api_key
         elif api_key := os.getenv(AI_SEC_API_KEY):
             self.api_key = api_key
-        else:
+
+        if api_token:
+            self.api_token = api_token
+        elif api_token := os.getenv(AI_SEC_API_TOKEN):
+            self.api_token = api_token
+
+        if not (self.api_key or self.api_token):
             self._log_and_raise(
-                "api_key can't be None",
+                "Either api_key or api_token must be provided ",
                 ErrorType.MISSING_VARIABLE,
             )
 
@@ -99,6 +102,10 @@ class _Configuration(BaseLogger):
                 f"api_key can't exceed {MAX_API_KEY_LENGTH} bytes",
                 ErrorType.AISEC_SDK_ERROR,
             )
+
+        if self.api_token:
+            warnings.warn("Both API key and OAuth token are configured. Consider using only one authentication method.")
+
         self._api_key = value
         self.logger.info(f"event={self.init.__name__} api_key value configured action=set")
         self.logger.debug(f"event={self.init.__name__} api_key_last8={self._api_key[:-8]}********* action=set")
@@ -122,9 +129,33 @@ class _Configuration(BaseLogger):
         self._num_retries = value
         self.logger.info(f"event={self.init.__name__} var={self._num_retries} action=set")
 
+    @property
+    def api_token(self):
+        return self._api_token
+
+    @api_token.setter
+    def api_token(self, value):
+        if value is None or len(value) == 0:
+            self._log_and_raise(
+                "api_token can't be None",
+                ErrorType.MISSING_VARIABLE,
+            )
+        if len(value) > MAX_TOKEN_LENGTH:
+            self._log_and_raise(
+                f"api_token can't exceed {MAX_TOKEN_LENGTH} bytes",
+                ErrorType.AISEC_SDK_ERROR,
+            )
+        if self.api_key:
+            warnings.warn("Both API key and OAuth token are configured. Consider using only one authentication method.")
+
+        self._api_token = value
+        self.logger.info(f"event={self.init.__name__} api_token value configured action=set")
+        self.logger.debug(f"event={self.init.__name__} api_token_last8={self._api_token[:-8]}********* action=set")
+
     def reset(self):
         self._api_endpoint = DEFAULT_ENDPOINT
         self._api_key = None
+        self._api_token = None
         self._num_retries = MAX_NUMBER_OF_RETRIES
         self.logger.info(f"event={self.reset.__name__} action=configuration_reset")
 

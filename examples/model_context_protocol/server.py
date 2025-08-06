@@ -1,4 +1,4 @@
-#!/usr/bin/env -S uv run fastmcp run -t sse # noqa: CPY001
+#!/usr/bin/env -S uv run fastmcp run -t sse
 """
 Palo Alto Networks AI Runtime Security (AIRS) API - Model Context Protocol (MCP) Server Example
 
@@ -35,7 +35,6 @@ import aisecurity
 from aisecurity.constants.base import (
     MAX_NUMBER_OF_BATCH_SCAN_OBJECTS,
     MAX_NUMBER_OF_SCAN_IDS,
-    MAX_NUMBER_OF_REPORT_IDS,
 )
 from aisecurity.generated_openapi_client import (
     AsyncScanObject,
@@ -61,8 +60,11 @@ async def mcp_lifespan_manager(*args, **kwargs) -> AsyncIterator[Any]:
 
     This is required to close the shared aiohttp connection pool on server shutdown.
     """
-    yield
-    await scanner.close()
+    try:
+        yield
+    finally:
+        # Important: close the connection pool after use to avoid leaking threads
+        await scanner.close()
 
 
 # Create the MCP Server with the lifespan context manager
@@ -95,24 +97,16 @@ def pan_init():
     elif ai_profile_id := os.getenv("PANW_AI_PROFILE_ID"):
         ai_profile = AiProfile(profile_id=ai_profile_id)
     else:
-        raise ToolError(
-            "Missing AI Profile Name (PANW_AI_PROFILE_NAME) or AI Profile ID (PANW_AI_PROFILE_ID)"
-        )
+        raise ToolError("Missing AI Profile Name (PANW_AI_PROFILE_NAME) or AI Profile ID (PANW_AI_PROFILE_ID)")
     aisecurity.init(
-        api_key=os.getenv(
-            "PANW_AI_SEC_API_KEY"
-        ),  # Optional - shows default fallback behavior
-        api_endpoint=os.getenv(
-            "PANW_AI_SEC_API_ENDPOINT"
-        ),  # Optional - shows default fallback behavior
+        api_key=os.getenv("PANW_AI_SEC_API_KEY"),  # Optional - shows default fallback behavior
+        api_endpoint=os.getenv("PANW_AI_SEC_API_ENDPOINT"),  # Optional - shows default fallback behavior
     )
     setattr(pan_init, "__completed__", True)
 
 
 @mcp.tool()
-async def pan_inline_scan(
-    prompt: str | None = None, response: str | None = None
-) -> ScanResponse:
+async def pan_inline_scan(prompt: str | None = None, response: str | None = None) -> ScanResponse:
     """Submit a single Prompt and/or Model-Response (Scan Content) to be scanned synchronously.
 
     This is a blocking operation - the function will not return until the scan is complete
@@ -120,13 +114,11 @@ async def pan_inline_scan(
 
     Returns a complete Scan Response, notably the category (benign/malicious) and action (allow/block).
 
-    See also: https://pan.dev/prisma-airs/api/airuntimesecurity/scan-sync-request/
+    See also: https://pan.dev/ai-runtime-security/api/scan-sync-request/
     """
     pan_init()
     if not prompt and not response:
-        raise ToolError(
-            f"Must provide at least one of prompt ({prompt}) and/or response ({response})."
-        )
+        raise ToolError(f"Must provide at least one of prompt ({prompt}) and/or response ({response}).")
     scan_response = await scanner.sync_scan(
         ai_profile=ai_profile,
         content=Content(
@@ -148,7 +140,7 @@ async def pan_batch_scan(
     Returns a list of AsyncScanResponse objects, each includes a scan_id and report_id,
     which can be used to retrieve scan results after the asynchronous scans are complete.
 
-    See also: https://pan.dev/prisma-airs/api/airuntimesecurity/scan-async-request/
+    See also: https://pan.dev/ai-runtime-security/api/scan-async-request/
     """
     global ai_profile
 
@@ -159,23 +151,21 @@ async def pan_batch_scan(
     req_id = 0
     # Split into batches
     for batch in itertools.batched(scan_contents, MAX_NUMBER_OF_BATCH_SCAN_OBJECTS):
-        async_scan_batches.append(
-            [
-                AsyncScanObject(
-                    req_id=(req_id := req_id + 1),
-                    scan_req=ScanRequest(
-                        ai_profile=ai_profile,
-                        contents=[
-                            ScanRequestContentsInner(
-                                prompt=sc.get("prompt"),
-                                response=sc.get("response"),
-                            )
-                        ],
-                    ),
-                )
-                for sc in batch
-            ]
-        )
+        async_scan_batches.append([
+            AsyncScanObject(
+                req_id=(req_id := req_id + 1),
+                scan_req=ScanRequest(
+                    ai_profile=ai_profile,
+                    contents=[
+                        ScanRequestContentsInner(
+                            prompt=sc.get("prompt"),
+                            response=sc.get("response"),
+                        )
+                    ],
+                ),
+            )
+            for sc in batch
+        ])
 
     # Process each batch concurrently via asyncio
     scan_coros = [scanner.async_scan(batch) for batch in async_scan_batches]
@@ -190,7 +180,7 @@ async def pan_get_scan_results(scan_ids: list[str]) -> list[ScanIdResult]:
 
     A Scan ID is a UUID string.
 
-    See also: https://pan.dev/prisma-airs/api/airuntimesecurity/get-scan-results-by-scan-i-ds/
+    See also: https://pan.dev/ai-runtime-security/api/get-scan-results-by-scan-i-ds/
     """
     pan_init()
     request_batches: list[list[str]] = []
@@ -199,9 +189,7 @@ async def pan_get_scan_results(scan_ids: list[str]) -> list[ScanIdResult]:
 
     # Process each batch concurrently via asyncio
     tasks = [scanner.query_by_scan_ids(batch) for batch in request_batches]
-    batch_results: list[list[ScanIdResult]] = await asyncio.gather(
-        *tasks, return_exceptions=True
-    )
+    batch_results: list[list[ScanIdResult]] = await asyncio.gather(*tasks, return_exceptions=True)
 
     # flatten nested list
     return safe_flatten(batch_results)
@@ -213,22 +201,20 @@ async def pan_get_scan_reports(report_ids: list[str]) -> list[ThreatScanReportOb
 
     A Scan Report ID is a Scan ID (UUID) prefixed with "R".
 
-    See also: https://pan.dev/prisma-airs/api/airuntimesecurity/get-threat-scan-reports/
+    See also: https://pan.dev/ai-runtime-security/api/get-scan-results-by-scan-i-ds/
     """
     pan_init()
 
     request_batches: list[list[str]] = []
-    for batch in itertools.batched(report_ids, MAX_NUMBER_OF_REPORT_IDS):
+    for batch in itertools.batched(report_ids, MAX_NUMBER_OF_SCAN_IDS):
         request_batches.append(list(batch))
 
     # Process each batch concurrently via asyncio
-    tasks = [scanner.query_by_report_ids(batch) for batch in request_batches]
-    batch_results: list[list[ThreatScanReportObject]] = await asyncio.gather(
-        *tasks, return_exceptions=True
-    )
+    tasks = [scanner.query_by_scan_ids(batch) for batch in request_batches]
+    await asyncio.gather(*tasks, return_exceptions=True)
 
-    # flatten nested list
-    return safe_flatten(batch_results)
+    threat_scan_reports = await scanner.query_by_report_ids(report_ids=report_ids)
+    return threat_scan_reports
 
 
 def maybe_monkeypatch_itertools_batched():

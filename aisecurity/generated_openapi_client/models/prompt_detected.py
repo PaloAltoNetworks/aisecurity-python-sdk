@@ -1,18 +1,4 @@
-# Copyright (c) 2025, Palo Alto Networks
-#
-# Licensed under the Polyform Internal Use License 1.0.0 (the "License");
-# you may not use this file except in compliance with the License.
-#
-# You may obtain a copy of the License at:
-#
-# https://polyformproject.org/licenses/internal-use/1.0.0
-# (or)
-# https://github.com/polyformproject/polyform-licenses/blob/76a278c4/PolyForm-Internal-Use-1.0.0.md
-#
-# As far as the law allows, the software comes as is, without any warranty
-# or condition, and the licensor will not be liable to you for any damages
-# arising out of these terms or the use or nature of the software, under
-# any kind of legal claim.
+# coding: utf-8
 
 """
 AISec API service
@@ -26,13 +12,13 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictBool
+from typing import Any, ClassVar, Dict, List, Optional
+from typing import Optional, Set
 from typing_extensions import Self
 
 
@@ -45,27 +31,22 @@ class PromptDetected(BaseModel):
         default=None, description="Indicates whether prompt contains any malicious URLs"
     )
     dlp: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether prompt contains any sensitive information",
+        default=None, description="Indicates whether prompt contains any sensitive information"
     )
     injection: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether prompt contains any injection threats",
+        default=None, description="Indicates whether prompt contains any injection threats"
     )
     toxic_content: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether prompt contains any harmful content",
+        default=None, description="Indicates whether prompt contains any harmful content"
     )
     malicious_code: Optional[StrictBool] = Field(
         default=None, description="Indicates whether prompt contains any malicious code"
     )
     agent: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether prompt contains any Agent related threats",
+        default=None, description="Indicates whether prompt contains any Agent related threats"
     )
     topic_violation: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether prompt contains any content violates topic guardrails",
+        default=None, description="Indicates whether prompt contains any content violates topic guardrails"
     )
     __properties: ClassVar[List[str]] = [
         "url_cats",

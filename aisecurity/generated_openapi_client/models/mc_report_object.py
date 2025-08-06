@@ -1,18 +1,4 @@
-# Copyright (c) 2025, Palo Alto Networks
-#
-# Licensed under the Polyform Internal Use License 1.0.0 (the "License");
-# you may not use this file except in compliance with the License.
-#
-# You may obtain a copy of the License at:
-#
-# https://polyformproject.org/licenses/internal-use/1.0.0
-# (or)
-# https://github.com/polyformproject/polyform-licenses/blob/76a278c4/PolyForm-Internal-Use-1.0.0.md
-#
-# As far as the law allows, the software comes as is, without any warranty
-# or condition, and the licensor will not be liable to you for any damages
-# arising out of these terms or the use or nature of the software, under
-# any kind of legal claim.
+# coding: utf-8
 
 """
 AISec API service
@@ -26,16 +12,15 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing_extensions import Self
-
+from typing import Any, ClassVar, Dict, List, Optional
 from aisecurity.generated_openapi_client.models.mc_entry_object import McEntryObject
+from typing import Optional, Set
+from typing_extensions import Self
 
 
 class McReportObject(BaseModel):
@@ -44,11 +29,11 @@ class McReportObject(BaseModel):
     """  # noqa: E501
 
     verdict: Optional[StrictStr] = Field(
-        default=None,
-        description='Detection service verdict such as "malicious" or "benign"',
+        default=None, description='Detection service verdict such as "malicious" or "benign"'
     )
-    code_info: Optional[List[McEntryObject]] = None
-    __properties: ClassVar[List[str]] = ["verdict", "code_info"]
+    code_analysis_by_type: Optional[List[McEntryObject]] = None
+    all_code_blocks: Optional[List[StrictStr]] = None
+    __properties: ClassVar[List[str]] = ["verdict", "code_analysis_by_type", "all_code_blocks"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -87,13 +72,13 @@ class McReportObject(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of each item in code_info (list)
+        # override the default output from pydantic by calling `to_dict()` of each item in code_analysis_by_type (list)
         _items = []
-        if self.code_info:
-            for _item_code_info in self.code_info:
-                if _item_code_info:
-                    _items.append(_item_code_info.to_dict())
-            _dict["code_info"] = _items
+        if self.code_analysis_by_type:
+            for _item_code_analysis_by_type in self.code_analysis_by_type:
+                if _item_code_analysis_by_type:
+                    _items.append(_item_code_analysis_by_type.to_dict())
+            _dict["code_analysis_by_type"] = _items
         return _dict
 
     @classmethod
@@ -107,8 +92,9 @@ class McReportObject(BaseModel):
 
         _obj = cls.model_validate({
             "verdict": obj.get("verdict"),
-            "code_info": [McEntryObject.from_dict(_item) for _item in obj["code_info"]]
-            if obj.get("code_info") is not None
+            "code_analysis_by_type": [McEntryObject.from_dict(_item) for _item in obj["code_analysis_by_type"]]
+            if obj.get("code_analysis_by_type") is not None
             else None,
+            "all_code_blocks": obj.get("all_code_blocks"),
         })
         return _obj

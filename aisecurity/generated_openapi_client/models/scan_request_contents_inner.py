@@ -1,18 +1,4 @@
-# Copyright (c) 2025, Palo Alto Networks
-#
-# Licensed under the Polyform Internal Use License 1.0.0 (the "License");
-# you may not use this file except in compliance with the License.
-#
-# You may obtain a copy of the License at:
-#
-# https://polyformproject.org/licenses/internal-use/1.0.0
-# (or)
-# https://github.com/polyformproject/polyform-licenses/blob/76a278c4/PolyForm-Internal-Use-1.0.0.md
-#
-# As far as the law allows, the software comes as is, without any warranty
-# or condition, and the licensor will not be liable to you for any damages
-# arising out of these terms or the use or nature of the software, under
-# any kind of legal claim.
+# coding: utf-8
 
 """
 AISec API service
@@ -26,13 +12,13 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from typing import Optional, Set
 from typing_extensions import Self
 
 
@@ -44,21 +30,13 @@ class ScanRequestContentsInner(BaseModel):
     prompt: Optional[StrictStr] = Field(default=None, description="The prompt content that you want to scan")
     response: Optional[StrictStr] = Field(default=None, description="The response content that you want to scan")
     code_prompt: Optional[StrictStr] = Field(
-        default=None,
-        description="Code snippet extracted from Prompt content that you want to scan",
+        default=None, description="Code snippet extracted from Prompt content that you want to scan"
     )
     code_response: Optional[StrictStr] = Field(
-        default=None,
-        description="Code snippet extracted from Response content that you want to scan",
+        default=None, description="Code snippet extracted from Response content that you want to scan"
     )
     context: Optional[StrictStr] = Field(default=None, description="The data context for contextual grounding")
-    __properties: ClassVar[List[str]] = [
-        "prompt",
-        "response",
-        "code_prompt",
-        "code_response",
-        "context",
-    ]
+    __properties: ClassVar[List[str]] = ["prompt", "response", "code_prompt", "code_response", "context"]
 
     model_config = ConfigDict(
         populate_by_name=True,

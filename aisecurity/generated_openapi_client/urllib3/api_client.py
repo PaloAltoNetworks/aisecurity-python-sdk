@@ -40,7 +40,7 @@ from dateutil.parser import parse
 from pydantic import SecretStr
 
 import aisecurity.generated_openapi_client.models
-from aisecurity.constants.base import HEADER_API_KEY, PAYLOAD_HASH
+from aisecurity.constants.base import HEADER_API_KEY, PAYLOAD_HASH, HEADER_AUTH_TOKEN
 from aisecurity.generated_openapi_client.urllib3 import rest
 from aisecurity.generated_openapi_client.urllib3.api_response import (
     ApiResponse,
@@ -264,8 +264,8 @@ class ApiClient:
 
         # Remove this hash configuration while generating new client
         try:
-            api_key = header_params[HEADER_API_KEY]
-            header_params[PAYLOAD_HASH] = Utils.generate_payload_hash(api_key, body)
+            api_credential = header_params.get(HEADER_AUTH_TOKEN) or header_params.get(HEADER_API_KEY)
+            header_params[PAYLOAD_HASH] = Utils.generate_payload_hash(api_credential, body)
         except Exception as e:
             raise e
 

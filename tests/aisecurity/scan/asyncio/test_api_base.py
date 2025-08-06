@@ -22,9 +22,11 @@ import aiohttp_retry
 from aisecurity import global_configuration
 from aisecurity.constants.base import (
     HEADER_API_KEY,
+    HEADER_AUTH_TOKEN,
     HTTP_FORCE_RETRY_STATUS_CODES,
     MAX_CONNECTION_POOL_SIZE,
     USER_AGENT,
+    BEARER,
 )
 from aisecurity.scan.asyncio.base import ApiBase, ScanApiBase
 
@@ -73,6 +75,42 @@ class TestApiBase(unittest.IsolatedAsyncioTestCase):
             result.rest_client.retry_client.retry_options.statuses,
             HTTP_FORCE_RETRY_STATUS_CODES,
         )
+        global_configuration.reset()
+
+    @patch("aisecurity.scan.asyncio.base.ApiClient")
+    def test_create_api_client_with_token(self, mock_api_client):
+        # Arrange
+        mock_instance = MagicMock()
+        mock_api_client.return_value = mock_instance
+        global_configuration.api_endpoint = "https://test-api.example.com"
+        global_configuration.api_token = "test-api-token"
+
+        # Act
+        api_base = ApiBase()
+        result = api_base.create_api_client()
+        self.assertEqual(result, mock_instance)
+        self.assertEqual(mock_instance.configuration.host, "https://test-api.example.com")
+        self.assertEqual(mock_instance.user_agent, USER_AGENT)
+        mock_instance.set_default_header.assert_any_call(HEADER_AUTH_TOKEN, BEARER + "test-api-token")
+        global_configuration.reset()
+
+    @patch("aisecurity.scan.asyncio.base.ApiClient")
+    def test_create_api_client_with_key_and_token(self, mock_api_client):
+        # Arrange
+        mock_instance = MagicMock()
+        mock_api_client.return_value = mock_instance
+        global_configuration.api_endpoint = "https://test-api.example.com"
+        global_configuration.api_token = "test-api-token"
+        global_configuration.api_key = "test-api-key"
+
+        # Act
+        api_base = ApiBase()
+        result = api_base.create_api_client()
+        self.assertEqual(result, mock_instance)
+        self.assertEqual(mock_instance.configuration.host, "https://test-api.example.com")
+        self.assertEqual(mock_instance.user_agent, USER_AGENT)
+        mock_instance.set_default_header.assert_any_call(HEADER_AUTH_TOKEN, BEARER + "test-api-token")
+        mock_instance.set_default_header.assert_any_call(HEADER_API_KEY, "test-api-key")
         global_configuration.reset()
 
 

@@ -26,13 +26,13 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from typing import Optional, Set
 from typing_extensions import Self
 
 
@@ -42,12 +42,10 @@ class AiProfile(BaseModel):
     """  # noqa: E501
 
     profile_id: Optional[StrictStr] = Field(
-        default=None,
-        description="Unique identifier for the profile. If not provided, then profile_name is required.",
+        default=None, description="Unique identifier for the profile. If not provided, then profile_name is required."
     )
     profile_name: Optional[StrictStr] = Field(
-        default=None,
-        description="Name of the profile. If not provided, then profile_id is required.",
+        default=None, description="Name of the profile. If not provided, then profile_id is required."
     )
     __properties: ClassVar[List[str]] = ["profile_id", "profile_name"]
 
@@ -99,8 +97,5 @@ class AiProfile(BaseModel):
         if not isinstance(obj, dict):
             return cls.model_validate(obj)
 
-        _obj = cls.model_validate({
-            "profile_id": obj.get("profile_id"),
-            "profile_name": obj.get("profile_name"),
-        })
+        _obj = cls.model_validate({"profile_id": obj.get("profile_id"), "profile_name": obj.get("profile_name")})
         return _obj

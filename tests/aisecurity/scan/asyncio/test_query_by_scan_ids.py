@@ -105,7 +105,7 @@ class TestQueryByScanIds(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(AISecSDKException) as context:
             await self.query_by_scan_ids.get_scan_results(too_many_scan_ids)
         self.assertIn(
-            f"Number of report IDs exceeds the maximum allowed ({MAX_NUMBER_OF_SCAN_IDS})",
+            f"Number of scan IDs exceeds the maximum allowed ({MAX_NUMBER_OF_SCAN_IDS})",
             str(context.exception),
         )
         mock_get_scan_results_by_scan_ids_api.assert_not_called()

@@ -26,18 +26,15 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from aisecurity.generated_openapi_client.models.detection_service_result_object import DetectionServiceResultObject
+from typing import Optional, Set
 from typing_extensions import Self
-
-from aisecurity.generated_openapi_client.models.detection_service_result_object import (
-    DetectionServiceResultObject,
-)
 
 
 class ThreatScanReportObject(BaseModel):
@@ -48,18 +45,11 @@ class ThreatScanReportObject(BaseModel):
     report_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for the scan report")
     scan_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for the scan")
     req_id: Optional[StrictInt] = Field(
-        default=None,
-        description="Unique identifier of an individual element sent in the batch scan request",
+        default=None, description="Unique identifier of an individual element sent in the batch scan request"
     )
     transaction_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for the transaction")
     detection_results: Optional[List[DetectionServiceResultObject]] = None
-    __properties: ClassVar[List[str]] = [
-        "report_id",
-        "scan_id",
-        "req_id",
-        "transaction_id",
-        "detection_results",
-    ]
+    __properties: ClassVar[List[str]] = ["report_id", "scan_id", "req_id", "transaction_id", "detection_results"]
 
     model_config = ConfigDict(
         populate_by_name=True,

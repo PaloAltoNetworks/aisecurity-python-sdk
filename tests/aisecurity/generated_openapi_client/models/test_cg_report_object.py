@@ -23,41 +23,37 @@ Do not edit the class manually.
 """  # noqa: E501
 
 import unittest
-from aisecurity.generated_openapi_client.models.mc_report_object import McReportObject
-from aisecurity.generated_openapi_client.models.mc_entry_object import McEntryObject
+from aisecurity.generated_openapi_client.models.cg_report_object import CgReportObject
 
 
-class TestMcReportObject(unittest.TestCase):
-    """McReportObject unit test stubs"""
+class TestCgReportObject(unittest.TestCase):
+    """CgReportObject unit test stubs"""
 
-    def make_instance(self, include_optional) -> McReportObject:
-        """Test McReportObject
+    def make_instance(self, include_optional) -> CgReportObject:
+        """Test CgReportObject
         include_optional is a boolean, when False only required
         params are included, when True both required and
         optional params are included"""
 
         if include_optional:
-            return McReportObject(
-                verdict="malicious",
-                code_analysis_by_type=[McEntryObject(file_type="python", code_sha256="abc123def456")],
-                all_code_blocks=["import os", 'print("hello")'],
+            return CgReportObject(
+                status="completed", explanation="Code analysis completed successfully", category="security_scan"
             )
         else:
-            return McReportObject()
+            return CgReportObject()
 
-    def testMcReportObject(self):
-        """Test McReportObject"""
+    def testCgReportObject(self):
+        """Test CgReportObject"""
         # Test required only
         inst_req_only = self.make_instance(include_optional=False)
-        self.assertIsInstance(inst_req_only, McReportObject)
+        self.assertIsInstance(inst_req_only, CgReportObject)
 
         # Test required and optional
         inst_req_and_optional = self.make_instance(include_optional=True)
-        self.assertIsInstance(inst_req_and_optional, McReportObject)
-        self.assertEqual(inst_req_and_optional.verdict, "malicious")
-        self.assertEqual(len(inst_req_and_optional.code_analysis_by_type), 1)
-        self.assertEqual(inst_req_and_optional.code_analysis_by_type[0].file_type, "python")
-        self.assertEqual(len(inst_req_and_optional.all_code_blocks), 2)
+        self.assertIsInstance(inst_req_and_optional, CgReportObject)
+        self.assertEqual(inst_req_and_optional.status, "completed")
+        self.assertEqual(inst_req_and_optional.explanation, "Code analysis completed successfully")
+        self.assertEqual(inst_req_and_optional.category, "security_scan")
 
 
 if __name__ == "__main__":

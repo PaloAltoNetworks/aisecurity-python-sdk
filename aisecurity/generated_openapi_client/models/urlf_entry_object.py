@@ -26,13 +26,13 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from typing import Optional, Set
 from typing_extensions import Self
 
 
@@ -43,12 +43,10 @@ class UrlfEntryObject(BaseModel):
 
     url: Optional[StrictStr] = Field(default=None, description="URL in the scan request")
     risk_level: Optional[StrictStr] = Field(
-        default=None,
-        description='Risk level associated with the URL, such as "high", "medium", or "low"',
+        default=None, description='Risk level associated with the URL, such as "high", "medium", or "low"'
     )
     action: Optional[StrictStr] = Field(
-        default=None,
-        description='Action associated with the URL Category, such as "allow", "block", or "unknown"',
+        default=None, description='Action associated with the URL Category, such as "allow", "block", or "unknown"'
     )
     categories: Optional[List[StrictStr]] = Field(default=None, description="Categories associated with the URL")
     __properties: ClassVar[List[str]] = ["url", "risk_level", "action", "categories"]

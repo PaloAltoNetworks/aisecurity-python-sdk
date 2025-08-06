@@ -26,13 +26,13 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from typing import Optional, Set
 from typing_extensions import Self
 
 
@@ -42,8 +42,7 @@ class McEntryObject(BaseModel):
     """  # noqa: E501
 
     file_type: Optional[StrictStr] = Field(
-        default=None,
-        description='code file type, such as "javascript", "Python", "VBScript" and others',
+        default=None, description='code file type, such as "javascript", "Python", "VBScript" and others'
     )
     code_sha256: Optional[StrictStr] = Field(
         default=None,

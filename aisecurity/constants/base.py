@@ -26,14 +26,17 @@ DEFAULT_ENDPOINT = "https://service.api.aisecurity.paloaltonetworks.com"
 
 # Environment variables
 AI_SEC_API_KEY = "PANW_AI_SEC_API_KEY"
+AI_SEC_API_TOKEN = "PANW_AI_SEC_API_TOKEN"
 AI_SEC_API_ENDPOINT = "PANW_AI_SEC_API_ENDPOINT"
-
+HEADER_AUTH_TOKEN = "Authorization"
+BEARER = "Bearer "
 # Content length limits
 MAX_CONTENT_PROMPT_LENGTH = 2 * 1024 * 1024
 MAX_CONTENT_RESPONSE_LENGTH = 2 * 1024 * 1024
 MAX_CONTENT_CONTEXT_LENGTH = 100 * 1024 * 1024
 # Key ID length constraint
 MAX_API_KEY_LENGTH = 2048
+MAX_TOKEN_LENGTH = 2048
 
 
 # Request IDs constraints

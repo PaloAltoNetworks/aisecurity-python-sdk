@@ -26,13 +26,13 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from typing import Optional, Set
 from typing_extensions import Self
 
 
@@ -42,12 +42,10 @@ class TcReportObject(BaseModel):
     """  # noqa: E501
 
     confidence: Optional[StrictStr] = Field(
-        default=None,
-        description='Confidence level of the threat classification (“high" and "moderate")',
+        default=None, description='Confidence level of the threat classification (“high" and "moderate")'
     )
     verdict: Optional[StrictStr] = Field(
-        default=None,
-        description='Detection service verdict such as "malicious" or "benign"',
+        default=None, description='Detection service verdict such as "malicious" or "benign"'
     )
     __properties: ClassVar[List[str]] = ["confidence", "verdict"]
 

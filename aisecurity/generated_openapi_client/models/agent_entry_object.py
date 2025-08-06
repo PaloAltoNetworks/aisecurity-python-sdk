@@ -26,13 +26,13 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from typing import Optional, Set
 from typing_extensions import Self
 
 
@@ -42,12 +42,10 @@ class AgentEntryObject(BaseModel):
     """  # noqa: E501
 
     category_type: Optional[StrictStr] = Field(
-        default=None,
-        description='Agent threat category type, such as "tools misuse", "memory manipulation" and others',
+        default=None, description='Agent threat category type, such as "tools misuse", "memory manipulation" and others'
     )
     verdict: Optional[StrictStr] = Field(
-        default=None,
-        description='Verdict associated with the Agent threat Category, such as "malicious" or "benign"',
+        default=None, description='Verdict associated with the Agent threat Category, such as "malicious" or "benign"'
     )
     __properties: ClassVar[List[str]] = ["category_type", "verdict"]
 

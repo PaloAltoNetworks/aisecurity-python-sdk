@@ -26,13 +26,13 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from typing import Optional, Set
 from typing_extensions import Self
 
 
@@ -44,21 +44,13 @@ class ScanRequestContentsInner(BaseModel):
     prompt: Optional[StrictStr] = Field(default=None, description="The prompt content that you want to scan")
     response: Optional[StrictStr] = Field(default=None, description="The response content that you want to scan")
     code_prompt: Optional[StrictStr] = Field(
-        default=None,
-        description="Code snippet extracted from Prompt content that you want to scan",
+        default=None, description="Code snippet extracted from Prompt content that you want to scan"
     )
     code_response: Optional[StrictStr] = Field(
-        default=None,
-        description="Code snippet extracted from Response content that you want to scan",
+        default=None, description="Code snippet extracted from Response content that you want to scan"
     )
     context: Optional[StrictStr] = Field(default=None, description="The data context for contextual grounding")
-    __properties: ClassVar[List[str]] = [
-        "prompt",
-        "response",
-        "code_prompt",
-        "code_response",
-        "context",
-    ]
+    __properties: ClassVar[List[str]] = ["prompt", "response", "code_prompt", "code_response", "context"]
 
     model_config = ConfigDict(
         populate_by_name=True,

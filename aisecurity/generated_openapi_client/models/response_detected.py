@@ -26,13 +26,13 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictBool
+from typing import Any, ClassVar, Dict, List, Optional
+from typing import Optional, Set
 from typing_extensions import Self
 
 
@@ -42,36 +42,28 @@ class ResponseDetected(BaseModel):
     """  # noqa: E501
 
     url_cats: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any malicious URLs",
+        default=None, description="Indicates whether response contains any malicious URLs"
     )
     dlp: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any sensitive information",
+        default=None, description="Indicates whether response contains any sensitive information"
     )
     db_security: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any database security threats",
+        default=None, description="Indicates whether response contains any database security threats"
     )
     toxic_content: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any harmful content",
+        default=None, description="Indicates whether response contains any harmful content"
     )
     malicious_code: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any malicious code",
+        default=None, description="Indicates whether response contains any malicious code"
     )
     agent: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any Agent related threats",
+        default=None, description="Indicates whether response contains any Agent related threats"
     )
     ungrounded: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any ungrounded content",
+        default=None, description="Indicates whether response contains any ungrounded content"
     )
     topic_violation: Optional[StrictBool] = Field(
-        default=None,
-        description="Indicates whether response contains any content violates topic guardrails",
+        default=None, description="Indicates whether response contains any content violates topic guardrails"
     )
     __properties: ClassVar[List[str]] = [
         "url_cats",

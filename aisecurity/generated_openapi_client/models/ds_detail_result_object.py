@@ -26,24 +26,22 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict
-from typing_extensions import Self
-
-from aisecurity.generated_openapi_client.models.agent_report_object import (
-    AgentReportObject,
-)
+from typing import Any, ClassVar, Dict, List, Optional
+from aisecurity.generated_openapi_client.models.agent_report_object import AgentReportObject
+from aisecurity.generated_openapi_client.models.cg_report_object import CgReportObject
 from aisecurity.generated_openapi_client.models.dbs_entry_object import DbsEntryObject
 from aisecurity.generated_openapi_client.models.dlp_report_object import DlpReportObject
 from aisecurity.generated_openapi_client.models.mc_report_object import McReportObject
 from aisecurity.generated_openapi_client.models.tc_report_object import TcReportObject
 from aisecurity.generated_openapi_client.models.tg_report_object import TgReportObject
 from aisecurity.generated_openapi_client.models.urlf_entry_object import UrlfEntryObject
+from typing import Optional, Set
+from typing_extensions import Self
 
 
 class DSDetailResultObject(BaseModel):
@@ -58,6 +56,7 @@ class DSDetailResultObject(BaseModel):
     mc_report: Optional[McReportObject] = None
     agent_report: Optional[AgentReportObject] = None
     topic_guardrails_report: Optional[TgReportObject] = None
+    cg_report: Optional[CgReportObject] = None
     __properties: ClassVar[List[str]] = [
         "urlf_report",
         "dlp_report",
@@ -66,6 +65,7 @@ class DSDetailResultObject(BaseModel):
         "mc_report",
         "agent_report",
         "topic_guardrails_report",
+        "cg_report",
     ]
 
     model_config = ConfigDict(
@@ -134,6 +134,9 @@ class DSDetailResultObject(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of topic_guardrails_report
         if self.topic_guardrails_report:
             _dict["topic_guardrails_report"] = self.topic_guardrails_report.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of cg_report
+        if self.cg_report:
+            _dict["cg_report"] = self.cg_report.to_dict()
         return _dict
 
     @classmethod
@@ -161,5 +164,6 @@ class DSDetailResultObject(BaseModel):
             "topic_guardrails_report": TgReportObject.from_dict(obj["topic_guardrails_report"])
             if obj.get("topic_guardrails_report") is not None
             else None,
+            "cg_report": CgReportObject.from_dict(obj["cg_report"]) if obj.get("cg_report") is not None else None,
         })
         return _obj

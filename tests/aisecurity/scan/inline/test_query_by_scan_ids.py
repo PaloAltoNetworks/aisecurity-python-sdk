@@ -55,7 +55,7 @@ class TestQueryByScanIds(unittest.TestCase):
             self.query_by_scan_ids.get_scan_results(scan_ids)
 
         self.assertIn(
-            f"Number of report IDs exceeds the maximum allowed ({MAX_NUMBER_OF_SCAN_IDS})",
+            f"Number of scan IDs exceeds the maximum allowed ({MAX_NUMBER_OF_SCAN_IDS})",
             str(context.exception),
         )
         self.assertEqual(ErrorType.USER_REQUEST_PAYLOAD_ERROR, context.exception.error_type)

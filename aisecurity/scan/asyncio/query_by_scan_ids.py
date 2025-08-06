@@ -57,7 +57,7 @@ class QueryByScanIds(ApiBase):
             raise AISecSDKException(error_msg, ErrorType.USER_REQUEST_PAYLOAD_ERROR)
 
         if len(scan_ids) > MAX_NUMBER_OF_SCAN_IDS:
-            error_msg = f"Number of report IDs exceeds the maximum allowed ({MAX_NUMBER_OF_SCAN_IDS})."
+            error_msg = f"Number of scan IDs exceeds the maximum allowed ({MAX_NUMBER_OF_SCAN_IDS})."
             self.logger.error(f"event={self.get_scan_results.__name__} error={error_msg}")
             raise AISecSDKException(
                 error_msg,

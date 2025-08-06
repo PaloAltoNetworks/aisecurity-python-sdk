@@ -22,6 +22,8 @@ from aisecurity.constants.base import (
     HTTP_FORCE_RETRY_STATUS_CODES,
     MAX_CONNECTION_POOL_SIZE,
     USER_AGENT,
+    HEADER_AUTH_TOKEN,
+    BEARER,
 )
 from aisecurity.generated_openapi_client.asyncio.api import ScansApi
 from aisecurity.generated_openapi_client.asyncio.api_client import ApiClient
@@ -60,6 +62,8 @@ class ApiBase(BaseLogger):
 
         if global_configuration.api_key is not None:
             api_client.set_default_header(HEADER_API_KEY, global_configuration.api_key)
+        if global_configuration.api_token is not None:
+            api_client.set_default_header(HEADER_AUTH_TOKEN, BEARER + global_configuration.api_token)
 
         self.logger.debug(f"event={self.create_api_client.__name__} action=new_api_client_created")
         return api_client

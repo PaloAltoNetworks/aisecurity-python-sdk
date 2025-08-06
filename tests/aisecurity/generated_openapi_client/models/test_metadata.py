@@ -48,9 +48,7 @@ class TestMetadata(unittest.TestCase):
         # uncomment below to create an instance of `Metadata`
         if include_optional:
             return Metadata(
-                app_name="aisec_app",
-                app_user="ai runtime security",
-                ai_model="sec_model_v1",
+                app_name="aisec_app", app_user="ai runtime security", ai_model="sec_model_v1", user_ip="100.100.100.100"
             )
         else:
             return Metadata()
@@ -64,12 +62,14 @@ class TestMetadata(unittest.TestCase):
         self.assertIsNone(inst_req_only.app_name)
         self.assertIsNone(inst_req_only.app_user)
         self.assertIsNone(inst_req_only.ai_model)
+        self.assertIsNone(inst_req_only.user_ip)
 
         # Assertions for instance with optional fields
         self.assertIsInstance(inst_req_and_optional, Metadata)
         self.assertEqual(inst_req_and_optional.app_name, "aisec_app")
         self.assertEqual(inst_req_and_optional.app_user, "ai runtime security")
         self.assertEqual(inst_req_and_optional.ai_model, "sec_model_v1")
+        self.assertEqual(inst_req_and_optional.user_ip, "100.100.100.100")
 
         # Additional assertions
         self.assertNotEqual(inst_req_only, inst_req_and_optional)
@@ -77,9 +77,7 @@ class TestMetadata(unittest.TestCase):
         self.assertEqual(
             inst_req_and_optional,
             Metadata(
-                app_name="aisec_app",
-                app_user="ai runtime security",
-                ai_model="sec_model_v1",
+                app_name="aisec_app", app_user="ai runtime security", ai_model="sec_model_v1", user_ip="100.100.100.100"
             ),
         )
 

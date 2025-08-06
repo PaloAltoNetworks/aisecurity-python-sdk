@@ -26,18 +26,15 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from aisecurity.generated_openapi_client.models.dlp_pattern_detections_object import DlpPatternDetectionsObject
+from typing import Optional, Set
 from typing_extensions import Self
-
-from aisecurity.generated_openapi_client.models.dlp_pattern_detections_object import (
-    DlpPatternDetectionsObject,
-)
 
 
 class DlpReportObject(BaseModel):
@@ -48,8 +45,7 @@ class DlpReportObject(BaseModel):
     dlp_report_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for the DLP report")
     dlp_profile_name: Optional[StrictStr] = Field(default=None, description="DLP profile name used for the scan")
     dlp_profile_id: Optional[StrictStr] = Field(
-        default=None,
-        description="Unique identifier for the DLP profile used for the scan",
+        default=None, description="Unique identifier for the DLP profile used for the scan"
     )
     dlp_profile_version: Optional[StrictInt] = Field(
         default=None, description="Version of the DLP profile used for the scan"

@@ -30,27 +30,20 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictInt, StrictStr
+from pydantic import BaseModel, ConfigDict
 from typing import Any, ClassVar, Dict, List, Optional
-from aisecurity.generated_openapi_client.models.scan_response import ScanResponse
+from aisecurity.generated_openapi_client.models.topic_guard_rails import TopicGuardRails
 from typing import Optional, Set
 from typing_extensions import Self
 
 
-class ScanIdResult(BaseModel):
+class PromptDetectionDetails(BaseModel):
     """
-    ScanIdResult
+    PromptDetectionDetails
     """  # noqa: E501
 
-    req_id: Optional[StrictInt] = Field(
-        default=None, description="Unique identifier of an individual element sent in the batch scan request"
-    )
-    status: Optional[StrictStr] = Field(
-        default=None, description='Scan request processing state such as "complete" or "pending"'
-    )
-    scan_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for the scan")
-    result: Optional[ScanResponse] = None
-    __properties: ClassVar[List[str]] = ["req_id", "status", "scan_id", "result"]
+    topic_guardrails_details: Optional[TopicGuardRails] = None
+    __properties: ClassVar[List[str]] = ["topic_guardrails_details"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -69,7 +62,7 @@ class ScanIdResult(BaseModel):
 
     @classmethod
     def from_json(cls, json_str: str) -> Optional[Self]:
-        """Create an instance of ScanIdResult from a JSON string"""
+        """Create an instance of PromptDetectionDetails from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
     def to_dict(self) -> Dict[str, Any]:
@@ -89,14 +82,14 @@ class ScanIdResult(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
-        # override the default output from pydantic by calling `to_dict()` of result
-        if self.result:
-            _dict["result"] = self.result.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of topic_guardrails_details
+        if self.topic_guardrails_details:
+            _dict["topic_guardrails_details"] = self.topic_guardrails_details.to_dict()
         return _dict
 
     @classmethod
     def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[Self]:
-        """Create an instance of ScanIdResult from a dict"""
+        """Create an instance of PromptDetectionDetails from a dict"""
         if obj is None:
             return None
 
@@ -104,9 +97,8 @@ class ScanIdResult(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
-            "req_id": obj.get("req_id"),
-            "status": obj.get("status"),
-            "scan_id": obj.get("scan_id"),
-            "result": ScanResponse.from_dict(obj["result"]) if obj.get("result") is not None else None,
+            "topic_guardrails_details": TopicGuardRails.from_dict(obj["topic_guardrails_details"])
+            if obj.get("topic_guardrails_details") is not None
+            else None
         })
         return _obj

@@ -26,13 +26,13 @@ Do not edit the class manually.
 """  # noqa: E501
 
 from __future__ import annotations
-
-import json
 import pprint
 import re  # noqa: F401
-from typing import Any, ClassVar, Dict, List, Optional, Set
+import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
+from typing import Any, ClassVar, Dict, List, Optional
+from typing import Optional, Set
 from typing_extensions import Self
 
 
@@ -49,7 +49,17 @@ class TgReportObject(BaseModel):
         default=None,
         description='Indicates whether there was a content match for the topic block list such as "MATCHED" or "NOT MATCHED"',
     )
-    __properties: ClassVar[List[str]] = ["allowed_topic_list", "blocked_topic_list"]
+    allowed_topics: Optional[List[StrictStr]] = Field(
+        default=None,
+        description="Indicates the list of allowed topics if there was a content match for the topic allow list",
+        alias="allowedTopics",
+    )
+    blocked_topics: Optional[List[StrictStr]] = Field(
+        default=None,
+        description="Indicates the list of blocked topics if there was a content match for the topic allow list",
+        alias="blockedTopics",
+    )
+    __properties: ClassVar[List[str]] = ["allowed_topic_list", "blocked_topic_list", "allowedTopics", "blockedTopics"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -102,5 +112,7 @@ class TgReportObject(BaseModel):
         _obj = cls.model_validate({
             "allowed_topic_list": obj.get("allowed_topic_list"),
             "blocked_topic_list": obj.get("blocked_topic_list"),
+            "allowedTopics": obj.get("allowedTopics"),
+            "blockedTopics": obj.get("blockedTopics"),
         })
         return _obj

@@ -23,41 +23,45 @@ Do not edit the class manually.
 """  # noqa: E501
 
 import unittest
-from aisecurity.generated_openapi_client.models.mc_report_object import McReportObject
-from aisecurity.generated_openapi_client.models.mc_entry_object import McEntryObject
+from aisecurity.generated_openapi_client.models.topic_guard_rails import TopicGuardRails
 
 
-class TestMcReportObject(unittest.TestCase):
-    """McReportObject unit test stubs"""
+class TestTopicGuardRails(unittest.TestCase):
+    """TopicGuardRails unit test stubs"""
 
-    def make_instance(self, include_optional) -> McReportObject:
-        """Test McReportObject
+    def make_instance(self, include_optional) -> TopicGuardRails:
+        """Test TopicGuardRails
         include_optional is a boolean, when False only required
         params are included, when True both required and
         optional params are included"""
 
         if include_optional:
-            return McReportObject(
-                verdict="malicious",
-                code_analysis_by_type=[McEntryObject(file_type="python", code_sha256="abc123def456")],
-                all_code_blocks=["import os", 'print("hello")'],
+            return TopicGuardRails(
+                allowed_topics=["technology", "science", "education", "business"],
+                blocked_topics=["violence", "hate_speech", "illegal_activities", "adult_content"],
             )
         else:
-            return McReportObject()
+            return TopicGuardRails()
 
-    def testMcReportObject(self):
-        """Test McReportObject"""
+    def testTopicGuardRails(self):
+        """Test TopicGuardRails"""
         # Test required only
         inst_req_only = self.make_instance(include_optional=False)
-        self.assertIsInstance(inst_req_only, McReportObject)
+        self.assertIsInstance(inst_req_only, TopicGuardRails)
 
         # Test required and optional
         inst_req_and_optional = self.make_instance(include_optional=True)
-        self.assertIsInstance(inst_req_and_optional, McReportObject)
-        self.assertEqual(inst_req_and_optional.verdict, "malicious")
-        self.assertEqual(len(inst_req_and_optional.code_analysis_by_type), 1)
-        self.assertEqual(inst_req_and_optional.code_analysis_by_type[0].file_type, "python")
-        self.assertEqual(len(inst_req_and_optional.all_code_blocks), 2)
+        self.assertIsInstance(inst_req_and_optional, TopicGuardRails)
+
+        # Test allowed_topics
+        self.assertEqual(len(inst_req_and_optional.allowed_topics), 4)
+        self.assertIn("technology", inst_req_and_optional.allowed_topics)
+        self.assertIn("science", inst_req_and_optional.allowed_topics)
+
+        # Test blocked_topics
+        self.assertEqual(len(inst_req_and_optional.blocked_topics), 4)
+        self.assertIn("violence", inst_req_and_optional.blocked_topics)
+        self.assertIn("hate_speech", inst_req_and_optional.blocked_topics)
 
 
 if __name__ == "__main__":

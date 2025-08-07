@@ -43,7 +43,7 @@ synchronous and asynchronous (asyncio) operations.
 </a>
 
 The reference API documentation for Palo Alto Networks AI Runtime Security:
-API Intercept can be found at [https://pan.dev/ai-runtime-security/scan/api/](https://pan.dev/ai-runtime-security/scan/api/)
+API Intercept can be found at [https://pan.dev/ai-runtime-security/scan/api/](https://pan.dev/prisma-airs/scan/api/)
 
 <a id="installation" href="#installation">
 

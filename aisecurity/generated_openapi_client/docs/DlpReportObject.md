@@ -5,12 +5,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**dlp_report_id** | **str** | Unique identifier for the DLP report | [optional]
-**dlp_profile_name** | **str** | DLP profile name used for the scan | [optional]
-**dlp_profile_id** | **str** | Unique identifier for the DLP profile used for the scan | [optional]
-**dlp_profile_version** | **int** | Version of the DLP profile used for the scan | [optional]
-**data_pattern_rule1_verdict** | **str** | Indicates whether there was a content match for this rule such as \&quot;MATCHED\&quot; or \&quot;NOT MATCHED\&quot; | [optional]
-**data_pattern_rule2_verdict** | **str** | Indicates whether there was a content match for this rule such as \&quot;MATCHED\&quot; or \&quot;NOT MATCHED\&quot; | [optional]
+**dlp_report_id** | **str** | Unique identifier for the DLP report | [optional] 
+**dlp_profile_name** | **str** | DLP profile name used for the scan | [optional] 
+**dlp_profile_id** | **str** | Unique identifier for the DLP profile used for the scan | [optional] 
+**dlp_profile_version** | **int** | Version of the DLP profile used for the scan | [optional] 
+**data_pattern_rule1_verdict** | **str** | Indicates whether there was a content match for this rule such as \&quot;MATCHED\&quot; or \&quot;NOT MATCHED\&quot; | [optional] 
+**data_pattern_rule2_verdict** | **str** | Indicates whether there was a content match for this rule such as \&quot;MATCHED\&quot; or \&quot;NOT MATCHED\&quot; | [optional] 
+**data_pattern_detection_offsets** | [**List[DlpPatternDetectionsObject]**](DlpPatternDetectionsObject.md) | Matched patterns and their byte locations | [optional] 
 
 ## Example
 
@@ -30,3 +31,5 @@ dlp_report_object_dict = dlp_report_object_instance.to_dict()
 dlp_report_object_from_dict = DlpReportObject.from_dict(dlp_report_object_dict)
 ```
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+

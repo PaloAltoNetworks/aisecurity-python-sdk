@@ -13,6 +13,7 @@ synchronous and asynchronous (asyncio) operations.
 - [Installation](#installation)
 - [SDK Configuration](#sdk-configuration)
   - [API Key](#api-key)
+  - [API Token](#api-token)
   - [AI Profile](#ai-profile)
 - [Example: SDK Configuration](#example-sdk-configuration)
   - [Using AI Profile Name](#using-ai-profile-name)
@@ -43,7 +44,7 @@ synchronous and asynchronous (asyncio) operations.
 </a>
 
 The reference API documentation for Palo Alto Networks AI Runtime Security:
-API Intercept can be found at [https://pan.dev/ai-runtime-security/scan/api/](https://pan.dev/prisma-airs/scan/api/)
+API Intercept can be found at [https://pan.dev/prisma-airs/scan/api/](https://pan.dev/prisma-airs/scan/api/)
 
 <a id="installation" href="#installation">
 
@@ -66,9 +67,14 @@ python3 -m pip install "pan-aisecurity"
 
 The `aisecurity.init()` function accepts the following _**optional**_ parameters:
 
-- `api_key` (optional): Provide your API key through configuration or an environment variable.
+- `api_key`: Provide your API key through configuration or an environment variable.
   - If `api_key` is not set, the environment variable `PANW_AI_SEC_API_KEY` will be used, if available.
+- `api_token`: Provide your API Token through configuration or an environment variable.
+  - If `api_token` is not set, the environment variable `PANW_AI_SEC_API_TOKEN` will be used, if available.
 - `num_retries` (optional): Default value is 5.
+-  You can use either an API key or an API token for authentication. If you happen to provide both valid ones, a warning will be displayed, and the API token will be used by default.
+
+
 
 <a id="api-key" href="#api-key">
 
@@ -90,6 +96,28 @@ export PANW_AI_SEC_API_KEY=YOUR_API_KEY
 api_key = get_api_key_from_somewhere() # Fetch from Vault, Secrets Manager, etc.
 aisecurity.init(api_key=api_key)
 ```
+
+<a id="api-token" href="#api-token">
+
+## API Token
+
+</a>
+
+There are two ways to specify your API Token:
+
+1. Using an environment variable:
+
+```sh
+export PANW_AI_SEC_API_TOKEN=YOUR_API_TOKEN
+```
+
+2. Specify your API Token in `aisecurity.init()` with the `api_token` parameter:
+
+```python
+api_token = get_api_token_from_somewhere() # Fetch from Vault, Secrets Manager, etc.
+aisecurity.init(api_token=api_token)
+```
+
 
 <a id="ai-profile" href="#ai-profile">
 
@@ -160,7 +188,7 @@ before using the SDK examples.
 
 </a>
 
-API Reference: https://pan.dev/ai-runtime-security/api/scan-sync-request/
+API Reference: https://pan.dev/prisma-airs/api/airuntimesecurity/scan-sync-request/
 
 <!-- source: examples/traditional/inline_sync_scan.py -->
 
@@ -204,7 +232,7 @@ pprint(scan_response)
 
 </a>
 
-API Reference: https://pan.dev/ai-runtime-security/api/scan-async-request/
+API Reference: https://pan.dev/prisma-airs/api/airuntimesecurity/scan-async-request/
 
 <!-- source: examples/traditional/batch_async_scan.py -->
 
@@ -220,10 +248,10 @@ from aisecurity.scan.inline.scanner import Scanner
 from aisecurity.scan.models.content import Content
 
 AI_PROFILE_NAME = "YOUR_AI_PROFILE_NAME"
-API_KEY = os.getenv("PANW_AI_SEC_API_KEY")
+API_TOKEN = os.getenv("PANW_AI_SEC_API_TOKEN")
 
-# Initialize the SDK with your API Key
-aisecurity.init(api_key=API_KEY)
+# Initialize the SDK with your API token
+aisecurity.init(api_token=API_TOKEN)
 
 # Configure an AI Profile
 ai_profile = AiProfile(profile_name=AI_PROFILE_NAME)
@@ -239,7 +267,7 @@ scan_response = scanner.sync_scan(
     ),
 )
 # See API documentation for response structure
-# https://pan.dev/ai-runtime-security/api/scan-sync-request/
+# https://pan.dev/prisma-airs/api/airuntimesecurity/scan-sync-request/
 pprint(scan_response)
 ```
 
@@ -249,7 +277,7 @@ pprint(scan_response)
 
 </a>
 
-API Reference: https://pan.dev/ai-runtime-security/api/get-scan-results-by-scan-i-ds/
+API Reference: https://pan.dev/prisma-airs/api/airuntimesecurity/get-scan-results-by-scan-i-ds/
 
 <!-- source: examples/traditional/scan_results.py -->
 
@@ -265,7 +293,7 @@ aisecurity.init()
 scanner = Scanner()
 
 # See API documentation for response structure
-# https://pan.dev/ai-runtime-security/api/get-scan-results-by-scan-i-ds/
+# https://pan.dev/prisma-airs/api/airuntimesecurity/get-scan-results-by-scan-i-ds/
 example_scan_id = "020e7c31-0000-4e0d-a2a6-215a0d5c56d9"
 scan_by_ids_response = scanner.query_by_scan_ids(scan_ids=[example_scan_id])
 ```
@@ -276,7 +304,7 @@ scan_by_ids_response = scanner.query_by_scan_ids(scan_ids=[example_scan_id])
 
 </a>
 
-API Reference: https://pan.dev/ai-runtime-security/api/get-threat-scan-reports/
+API Reference: https://pan.dev/prisma-airs/api/airuntimesecurity/get-threat-scan-reports/
 
 <!-- source: examples/traditional/scan_reports.py -->
 
@@ -291,7 +319,7 @@ aisecurity.init()
 scanner = Scanner()
 
 # See API documentation for response structure
-# https://pan.dev/ai-runtime-security/api/get-threat-scan-reports/
+# https://pan.dev/prisma-airs/api/airuntimesecurity/get-threat-scan-reports/
 example_report_id = "020e7c31-0000-4e0d-a2a6-215a0d5c56d9"
 threat_scan_reports = scanner.query_by_report_ids(report_ids=[example_report_id])
 ```
@@ -311,7 +339,7 @@ before using the SDK examples.
 
 </a>
 
-API Reference: https://pan.dev/ai-runtime-security/api/scan-sync-request/
+API Reference: https://pan.dev/prisma-airs/api/airuntimesecurity/scan-sync-request/
 
 <!-- source: examples/asyncio/inline_sync_scan.py -->
 
@@ -350,7 +378,7 @@ async def main():
         ),
     )
     # See API documentation for response structure
-    # https://pan.dev/ai-runtime-security/api/scan-sync-request/
+    # https://pan.dev/prisma-airs/api/airuntimesecurity/scan-sync-request/
     pprint(scan_response)
 
 
@@ -365,7 +393,7 @@ if __name__ == "__main__":
 
 </a>
 
-API Reference: https://pan.dev/ai-runtime-security/api/scan-async-request/
+API Reference: https://pan.dev/prisma-airs/api/airuntimesecurity/scan-async-request/
 
 <!-- source: examples/asyncio/batch_async_scan.py -->
 
@@ -385,10 +413,10 @@ from aisecurity.generated_openapi_client import ScanRequestContentsInner
 from aisecurity.scan.asyncio.scanner import Scanner
 
 AI_PROFILE_NAME = "YOUR_AI_PROFILE_NAME"
-API_KEY = os.getenv("PANW_AI_SEC_API_KEY")
+API_TOKEN = os.getenv("PANW_AI_SEC_API_TOKEN")
 
-# Initialize the SDK with your API Key
-aisecurity.init(api_key=API_KEY)
+# Initialize the SDK with your API Token
+aisecurity.init(api_token=API_TOKEN)
 
 # Configure an AI Profile
 ai_profile = AiProfile(profile_name=AI_PROFILE_NAME)
@@ -429,7 +457,7 @@ async_scan_objects = [
 async def main():
     response = await scanner.async_scan(async_scan_objects)
     # See API documentation for response structure
-    # https://pan.dev/ai-runtime-security/api/scan-async-request/
+    # https://pan.dev/prisma-airs/api/airuntimesecurity/scan-async-request/
     pprint(
         {
             "received": response.received,
@@ -449,7 +477,7 @@ if __name__ == "__main__":
 
 </a>
 
-API Reference: https://pan.dev/ai-runtime-security/api/get-scan-results-by-scan-i-ds/
+API Reference: https://pan.dev/prisma-airs/api/airuntimesecurity/get-scan-results-by-scan-i-ds/
 
 <!-- source: examples/asyncio/scan_results.py -->
 
@@ -469,7 +497,7 @@ scanner = Scanner()
 
 async def main():
     # See API documentation for response structure
-    # https://pan.dev/ai-runtime-security/api/get-scan-results-by-scan-i-ds/
+    # https://pan.dev/prisma-airs/api/airuntimesecurity/get-scan-results-by-scan-i-ds/
     example_scan_id = "020e7c31-0000-4e0d-a2a6-215a0d5c56d9"
     scan_results = await scanner.query_by_scan_ids(scan_ids=[example_scan_id])
     pprint(scan_results)
@@ -485,7 +513,7 @@ if __name__ == "__main__":
 
 </a>
 
-API Reference: https://pan.dev/ai-runtime-security/api/get-threat-scan-reports/
+API Reference: https://pan.dev/prisma-airs/api/airuntimesecurity/get-threat-scan-reports/
 
 <!-- source: examples/asyncio/scan_reports.py -->
 
@@ -505,7 +533,7 @@ scanner = Scanner()
 
 async def main():
     # See API documentation for response structur
-    # https://pan.dev/ai-runtime-security/api/get-threat-scan-reports/
+    # https://pan.dev/prisma-airs/api/airuntimesecurity/get-threat-scan-reports/
     example_report_id = "020e7c31-0000-4e0d-a2a6-215a0d5c56d9"
     threat_scan_reports = await scanner.query_by_report_ids(
         report_ids=[example_report_id]
@@ -646,7 +674,7 @@ async def pan_inline_scan(prompt: str | None = None, response: str | None = None
 
     Returns a complete Scan Response, notably the category (benign/malicious) and action (allow/block).
 
-    See also: https://pan.dev/ai-runtime-security/api/scan-sync-request/
+    See also: https://pan.dev/prisma-airs/api/airuntimesecurity/scan-sync-request/
     """
     pan_init()
     if not prompt and not response:
@@ -672,7 +700,7 @@ async def pan_batch_scan(
     Returns a list of AsyncScanResponse objects, each includes a scan_id and report_id,
     which can be used to retrieve scan results after the asynchronous scans are complete.
 
-    See also: https://pan.dev/ai-runtime-security/api/scan-async-request/
+    See also: https://pan.dev/prisma-airs/api/airuntimesecurity/scan-async-request/
     """
     global ai_profile
 
@@ -712,7 +740,7 @@ async def pan_get_scan_results(scan_ids: list[str]) -> list[ScanIdResult]:
 
     A Scan ID is a UUID string.
 
-    See also: https://pan.dev/ai-runtime-security/api/get-scan-results-by-scan-i-ds/
+    See also: https://pan.dev/prisma-airs/api/airuntimesecurity/get-scan-results-by-scan-i-ds/
     """
     pan_init()
     request_batches: list[list[str]] = []
@@ -733,7 +761,7 @@ async def pan_get_scan_reports(report_ids: list[str]) -> list[ThreatScanReportOb
 
     A Scan Report ID is a Scan ID (UUID) prefixed with "R".
 
-    See also: https://pan.dev/ai-runtime-security/api/get-scan-results-by-scan-i-ds/
+    See also: https://pan.dev/prisma-airs/api/airuntimesecurity/get-scan-results-by-scan-i-ds/
     """
     pan_init()
 

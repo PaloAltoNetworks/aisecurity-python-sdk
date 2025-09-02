@@ -52,7 +52,7 @@ with generated_openapi_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **report_ids** | [**List[str]**](str.md)| Report Ids for Results |
+ **report_ids** | [**List[str]**](str.md)| Report Ids for Results | 
 
 ### Return type
 
@@ -75,3 +75,4 @@ No authorization required
 **0** | error occurred |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+

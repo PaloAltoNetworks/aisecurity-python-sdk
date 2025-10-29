@@ -5,16 +5,18 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**source** | **str** | Source of the scan request (e.g., &#39;AI-Runtime-MCP-Server&#39; or &#39;AI-Runtime-API&#39;) | [optional] 
 **report_id** | **str** | Unique identifier for the scan report | [optional] 
 **scan_id** | **str** | Unique identifier for the scan | [optional] 
 **req_id** | **int** | Unique identifier of an individual element sent in the batch scan request | [optional] 
 **transaction_id** | **str** | Unique identifier for the transaction | [optional] 
+**session_id** | **str** | Unique identifier for tracking Sessions | [optional] 
 **detection_results** | [**List[DetectionServiceResultObject]**](DetectionServiceResultObject.md) |  | [optional] 
 
 ## Example
 
 ```python
-from generated_openapi_client.models.threat_scan_report_object import ThreatScanReportObject
+from aisecurity.generated_openapi_client.models.threat_scan_report_object import ThreatScanReportObject
 
 # TODO update the JSON string below
 json = "{}"

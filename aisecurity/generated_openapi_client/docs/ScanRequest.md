@@ -6,6 +6,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **tr_id** | **str** | Unique identifier for the transaction correlating prompt and response | [optional] 
+**session_id** | **str** | Unique identifier for tracking Sessions | [optional] 
 **ai_profile** | [**AiProfile**](AiProfile.md) |  | 
 **metadata** | [**Metadata**](Metadata.md) |  | [optional] 
 **contents** | [**List[ScanRequestContentsInner]**](ScanRequestContentsInner.md) | List of prompt or response or prompt/response pairs. The last element is the one that needs to be scanned, and the previous elements are the context for the scan. | 
@@ -13,7 +14,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.scan_request import ScanRequest
+from aisecurity.generated_openapi_client.models.scan_request import ScanRequest
 
 # TODO update the JSON string below
 json = "{}"

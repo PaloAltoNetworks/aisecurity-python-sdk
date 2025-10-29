@@ -42,14 +42,26 @@ class ThreatScanReportObject(BaseModel):
     ThreatScanReportObject
     """  # noqa: E501
 
+    source: Optional[StrictStr] = Field(
+        default=None, description="Source of the scan request (e.g., 'AI-Runtime-MCP-Server' or 'AI-Runtime-API')"
+    )
     report_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for the scan report")
     scan_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for the scan")
     req_id: Optional[StrictInt] = Field(
         default=None, description="Unique identifier of an individual element sent in the batch scan request"
     )
     transaction_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for the transaction")
+    session_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for tracking Sessions")
     detection_results: Optional[List[DetectionServiceResultObject]] = None
-    __properties: ClassVar[List[str]] = ["report_id", "scan_id", "req_id", "transaction_id", "detection_results"]
+    __properties: ClassVar[List[str]] = [
+        "source",
+        "report_id",
+        "scan_id",
+        "req_id",
+        "transaction_id",
+        "session_id",
+        "detection_results",
+    ]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -107,10 +119,12 @@ class ThreatScanReportObject(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "source": obj.get("source"),
             "report_id": obj.get("report_id"),
             "scan_id": obj.get("scan_id"),
             "req_id": obj.get("req_id"),
             "transaction_id": obj.get("transaction_id"),
+            "session_id": obj.get("session_id"),
             "detection_results": [DetectionServiceResultObject.from_dict(_item) for _item in obj["detection_results"]]
             if obj.get("detection_results") is not None
             else None,

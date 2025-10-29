@@ -1,4 +1,4 @@
-# generated_openapi_client.ScanResultsApi
+# aisecurity.generated_openapi_client.ScanResultsApi
 
 All URIs are relative to *http://localhost:39090*
 
@@ -18,22 +18,22 @@ Get the Scan results for upto a maximum of 5 Scan IDs
 
 
 ```python
-import generated_openapi_client
-from generated_openapi_client.models.scan_id_result import ScanIdResult
-from generated_openapi_client.rest import ApiException
+import aisecurity.generated_openapi_client
+from aisecurity.generated_openapi_client.models.scan_id_result import ScanIdResult
+from aisecurity.generated_openapi_client.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost:39090
 # See configuration.py for a list of all supported configuration parameters.
-configuration = generated_openapi_client.Configuration(
+configuration = aisecurity.generated_openapi_client.Configuration(
     host = "http://localhost:39090"
 )
 
 
 # Enter a context with an instance of the API client
-with generated_openapi_client.ApiClient(configuration) as api_client:
+with aisecurity.generated_openapi_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = generated_openapi_client.ScanResultsApi(api_client)
+    api_instance = aisecurity.generated_openapi_client.ScanResultsApi(api_client)
     scan_ids = ['scan_ids_example'] # List[str] | Scan Ids for Results
 
     try:

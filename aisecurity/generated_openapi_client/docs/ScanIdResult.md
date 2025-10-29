@@ -5,6 +5,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**source** | **str** | Source of the scan request (e.g., &#39;AI-Runtime-MCP-Server&#39; or &#39;AI-Runtime-API&#39;) | [optional] 
 **req_id** | **int** | Unique identifier of an individual element sent in the batch scan request | [optional] 
 **status** | **str** | Scan request processing state such as \&quot;complete\&quot; or \&quot;pending\&quot; | [optional] 
 **scan_id** | **str** | Unique identifier for the scan | [optional] 
@@ -13,7 +14,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.scan_id_result import ScanIdResult
+from aisecurity.generated_openapi_client.models.scan_id_result import ScanIdResult
 
 # TODO update the JSON string below
 json = "{}"

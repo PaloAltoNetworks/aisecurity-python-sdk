@@ -8,11 +8,12 @@ Name | Type | Description | Notes
 **received** | **datetime** | Asynchronous scan received timestamp | 
 **scan_id** | **str** | Unique identifier for the asynchronous scan request | 
 **report_id** | **str** | Unique identifier for the asynchronous scan report | [optional] 
+**source** | **str** | Source of the scan request (e.g., &#39;AI-Runtime-MCP-Server&#39; or &#39;AI-Runtime-API&#39;) | [optional] 
 
 ## Example
 
 ```python
-from generated_openapi_client.models.async_scan_response import AsyncScanResponse
+from aisecurity.generated_openapi_client.models.async_scan_response import AsyncScanResponse
 
 # TODO update the JSON string below
 json = "{}"

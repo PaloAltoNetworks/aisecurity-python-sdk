@@ -44,7 +44,7 @@ class TestScanner(unittest.TestCase):
 
         self.assertEqual(response, "mock_response")
         mock_instance.sync_request.assert_called_once_with(
-            ai_profile=ai_profile, content=content, tr_id=None, metadata=None
+            ai_profile=ai_profile, content=content, tr_id=None, session_id=None, metadata=None
         )
 
     @patch("aisecurity.scan.inline.scanner.AsyncScanExecutor")

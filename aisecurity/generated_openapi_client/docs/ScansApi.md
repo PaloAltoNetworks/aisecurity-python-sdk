@@ -1,4 +1,4 @@
-# generated_openapi_client.ScansApi
+# aisecurity.generated_openapi_client.ScansApi
 
 All URIs are relative to *http://localhost:39090*
 
@@ -19,24 +19,24 @@ Post a scan request that returns asynchronous scan response
 
 
 ```python
-import generated_openapi_client
-from generated_openapi_client.models.async_scan_object import AsyncScanObject
-from generated_openapi_client.models.async_scan_response import AsyncScanResponse
-from generated_openapi_client.rest import ApiException
+import aisecurity.generated_openapi_client
+from aisecurity.generated_openapi_client.models.async_scan_object import AsyncScanObject
+from aisecurity.generated_openapi_client.models.async_scan_response import AsyncScanResponse
+from aisecurity.generated_openapi_client.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost:39090
 # See configuration.py for a list of all supported configuration parameters.
-configuration = generated_openapi_client.Configuration(
+configuration = aisecurity.generated_openapi_client.Configuration(
     host = "http://localhost:39090"
 )
 
 
 # Enter a context with an instance of the API client
-with generated_openapi_client.ApiClient(configuration) as api_client:
+with aisecurity.generated_openapi_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = generated_openapi_client.ScansApi(api_client)
-    async_scan_object = None # List[List[AsyncScanObject]] | A list of scan request objects
+    api_instance = aisecurity.generated_openapi_client.ScansApi(api_client)
+    async_scan_object = [aisecurity.generated_openapi_client.AsyncScanObject()] # List[AsyncScanObject] | A list of scan request objects
 
     try:
         # Send an Asynchronous Scan Request
@@ -54,7 +54,7 @@ with generated_openapi_client.ApiClient(configuration) as api_client:
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **async_scan_object** | [**List[List[AsyncScanObject]]**](List.md)| A list of scan request objects | 
+ **async_scan_object** | [**List[AsyncScanObject]**](AsyncScanObject.md)| A list of scan request objects | 
 
 ### Return type
 
@@ -89,24 +89,24 @@ Post a scan request containing prompt/model-response that returns a synchronous 
 
 
 ```python
-import generated_openapi_client
-from generated_openapi_client.models.scan_request import ScanRequest
-from generated_openapi_client.models.scan_response import ScanResponse
-from generated_openapi_client.rest import ApiException
+import aisecurity.generated_openapi_client
+from aisecurity.generated_openapi_client.models.scan_request import ScanRequest
+from aisecurity.generated_openapi_client.models.scan_response import ScanResponse
+from aisecurity.generated_openapi_client.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost:39090
 # See configuration.py for a list of all supported configuration parameters.
-configuration = generated_openapi_client.Configuration(
+configuration = aisecurity.generated_openapi_client.Configuration(
     host = "http://localhost:39090"
 )
 
 
 # Enter a context with an instance of the API client
-with generated_openapi_client.ApiClient(configuration) as api_client:
+with aisecurity.generated_openapi_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = generated_openapi_client.ScansApi(api_client)
-    scan_request = generated_openapi_client.ScanRequest() # ScanRequest | Scan request object
+    api_instance = aisecurity.generated_openapi_client.ScansApi(api_client)
+    scan_request = aisecurity.generated_openapi_client.ScanRequest() # ScanRequest | Scan request object
 
     try:
         # Send a Synchronous Scan Request

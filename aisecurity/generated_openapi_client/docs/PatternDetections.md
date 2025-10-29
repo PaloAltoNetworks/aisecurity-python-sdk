@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.pattern_detections import PatternDetections
+from aisecurity.generated_openapi_client.models.pattern_detections import PatternDetections
 
 # TODO update the JSON string below
 json = "{}"

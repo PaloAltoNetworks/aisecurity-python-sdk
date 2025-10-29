@@ -42,6 +42,9 @@ class ScanIdResult(BaseModel):
     ScanIdResult
     """  # noqa: E501
 
+    source: Optional[StrictStr] = Field(
+        default=None, description="Source of the scan request (e.g., 'AI-Runtime-MCP-Server' or 'AI-Runtime-API')"
+    )
     req_id: Optional[StrictInt] = Field(
         default=None, description="Unique identifier of an individual element sent in the batch scan request"
     )
@@ -50,7 +53,7 @@ class ScanIdResult(BaseModel):
     )
     scan_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for the scan")
     result: Optional[ScanResponse] = None
-    __properties: ClassVar[List[str]] = ["req_id", "status", "scan_id", "result"]
+    __properties: ClassVar[List[str]] = ["source", "req_id", "status", "scan_id", "result"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -104,6 +107,7 @@ class ScanIdResult(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "source": obj.get("source"),
             "req_id": obj.get("req_id"),
             "status": obj.get("status"),
             "scan_id": obj.get("scan_id"),

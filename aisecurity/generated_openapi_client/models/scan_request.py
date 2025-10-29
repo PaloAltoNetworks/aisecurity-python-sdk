@@ -30,11 +30,13 @@ import pprint
 import re  # noqa: F401
 import json
 
-from pydantic import BaseModel, ConfigDict, Field, StrictStr
-from typing import Any, ClassVar, Dict, List, Optional
+from pydantic import BaseModel, ConfigDict, Field, StrictStr, field_validator, model_validator
+from typing import Any, ClassVar, Dict, List
 from aisecurity.generated_openapi_client.models.ai_profile import AiProfile
 from aisecurity.generated_openapi_client.models.metadata import Metadata
 from aisecurity.generated_openapi_client.models.scan_request_contents_inner import ScanRequestContentsInner
+from aisecurity.constants.base import MAX_TRANSACTION_ID_STR_LENGTH, MAX_SESSION_ID_STR_LENGTH
+from aisecurity.exceptions import AISecSDKException, ErrorType
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -47,18 +49,53 @@ class ScanRequest(BaseModel):
     tr_id: Optional[StrictStr] = Field(
         default=None, description="Unique identifier for the transaction correlating prompt and response"
     )
+    session_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for tracking Sessions")
     ai_profile: AiProfile
     metadata: Optional[Metadata] = None
     contents: List[ScanRequestContentsInner] = Field(
         description="List of prompt or response or prompt/response pairs. The last element is the one that needs to be scanned, and the previous elements are the context for the scan."
     )
-    __properties: ClassVar[List[str]] = ["tr_id", "ai_profile", "metadata", "contents"]
+    __properties: ClassVar[List[str]] = ["tr_id", "session_id", "ai_profile", "metadata", "contents"]
 
     model_config = ConfigDict(
         populate_by_name=True,
         validate_assignment=True,
         protected_namespaces=(),
     )
+
+    @field_validator("session_id")
+    @classmethod
+    def validate_id_length(cls, v: Optional[str], info) -> Optional[str]:
+        """Only validate session_id length"""
+        if v is not None:
+            cleaned_value = str(v).strip()
+            if len(cleaned_value) > MAX_SESSION_ID_STR_LENGTH:
+                raise AISecSDKException(
+                    f"sessionID exceeds maximum length of {MAX_SESSION_ID_STR_LENGTH} characters",
+                    ErrorType.USER_REQUEST_PAYLOAD_ERROR,
+                )
+            return cleaned_value
+        return v
+
+    @model_validator(mode="after")
+    def validate_id_priority(self) -> "ScanRequest":
+        """Handle priority logic: session_id > tr_id, but only validate tr_id if session_id is empty"""
+        session_id = self.session_id
+        tr_id = self.tr_id
+
+        # Check if session_id has actual content
+        has_valid_session_id = session_id and str(session_id).strip()
+
+        # If session_id is empty/None but tr_id is provided, validate tr_id length
+        if not has_valid_session_id and tr_id:
+            cleaned_tr_id = str(tr_id).strip()
+            if len(cleaned_tr_id) > MAX_TRANSACTION_ID_STR_LENGTH:
+                raise AISecSDKException(
+                    f"transactionID exceeds maximum length of {MAX_TRANSACTION_ID_STR_LENGTH} characters",
+                    ErrorType.USER_REQUEST_PAYLOAD_ERROR,
+                )
+
+        return self
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""
@@ -117,6 +154,7 @@ class ScanRequest(BaseModel):
 
         _obj = cls.model_validate({
             "tr_id": obj.get("tr_id"),
+            "session_id": obj.get("session_id"),
             "ai_profile": AiProfile.from_dict(obj["ai_profile"]) if obj.get("ai_profile") is not None else None,
             "metadata": Metadata.from_dict(obj["metadata"]) if obj.get("metadata") is not None else None,
             "contents": [ScanRequestContentsInner.from_dict(_item) for _item in obj["contents"]]

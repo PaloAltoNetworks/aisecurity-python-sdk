@@ -38,6 +38,7 @@ from aisecurity.generated_openapi_client.models.prompt_detected import PromptDet
 from aisecurity.generated_openapi_client.models.prompt_detection_details import PromptDetectionDetails
 from aisecurity.generated_openapi_client.models.response_detected import ResponseDetected
 from aisecurity.generated_openapi_client.models.response_detection_details import ResponseDetectionDetails
+from aisecurity.generated_openapi_client.models.tool_detected import ToolDetected
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -47,9 +48,13 @@ class ScanResponse(BaseModel):
     ScanResponse
     """  # noqa: E501
 
+    source: Optional[StrictStr] = Field(
+        default=None, description="Source of the scan request (e.g., 'AI-Runtime-MCP-Server' or 'AI-Runtime-API')"
+    )
     report_id: StrictStr = Field(description="Unique identifier for the scan report")
     scan_id: StrictStr = Field(description="Unique identifier for the scan")
     tr_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for the transaction")
+    session_id: Optional[StrictStr] = Field(default=None, description="Unique identifier for tracking Sessions")
     profile_id: Optional[StrictStr] = Field(
         default=None, description="Unique identifier of the AI security profile used for scanning"
     )
@@ -64,12 +69,15 @@ class ScanResponse(BaseModel):
     response_masked_data: Optional[MaskedData] = None
     prompt_detection_details: Optional[PromptDetectionDetails] = None
     response_detection_details: Optional[ResponseDetectionDetails] = None
+    tool_detected: Optional[ToolDetected] = None
     created_at: Optional[datetime] = Field(default=None, description="Scan request timestamp")
     completed_at: Optional[datetime] = Field(default=None, description="Scan completion timestamp")
     __properties: ClassVar[List[str]] = [
+        "source",
         "report_id",
         "scan_id",
         "tr_id",
+        "session_id",
         "profile_id",
         "profile_name",
         "category",
@@ -80,6 +88,7 @@ class ScanResponse(BaseModel):
         "response_masked_data",
         "prompt_detection_details",
         "response_detection_details",
+        "tool_detected",
         "created_at",
         "completed_at",
     ]
@@ -139,6 +148,9 @@ class ScanResponse(BaseModel):
         # override the default output from pydantic by calling `to_dict()` of response_detection_details
         if self.response_detection_details:
             _dict["response_detection_details"] = self.response_detection_details.to_dict()
+        # override the default output from pydantic by calling `to_dict()` of tool_detected
+        if self.tool_detected:
+            _dict["tool_detected"] = self.tool_detected.to_dict()
         return _dict
 
     @classmethod
@@ -151,9 +163,11 @@ class ScanResponse(BaseModel):
             return cls.model_validate(obj)
 
         _obj = cls.model_validate({
+            "source": obj.get("source"),
             "report_id": obj.get("report_id"),
             "scan_id": obj.get("scan_id"),
             "tr_id": obj.get("tr_id"),
+            "session_id": obj.get("session_id"),
             "profile_id": obj.get("profile_id"),
             "profile_name": obj.get("profile_name"),
             "category": obj.get("category"),
@@ -175,6 +189,9 @@ class ScanResponse(BaseModel):
             else None,
             "response_detection_details": ResponseDetectionDetails.from_dict(obj["response_detection_details"])
             if obj.get("response_detection_details") is not None
+            else None,
+            "tool_detected": ToolDetected.from_dict(obj["tool_detected"])
+            if obj.get("tool_detected") is not None
             else None,
             "created_at": obj.get("created_at"),
             "completed_at": obj.get("completed_at"),

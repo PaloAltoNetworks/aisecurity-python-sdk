@@ -33,6 +33,7 @@ import json
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
 from aisecurity.generated_openapi_client.models.ds_detail_result_object import DSDetailResultObject
+from aisecurity.generated_openapi_client.models.ds_result_metadata import DSResultMetadata
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -42,7 +43,9 @@ class DetectionServiceResultObject(BaseModel):
     DetectionServiceResultObject
     """  # noqa: E501
 
-    data_type: Optional[StrictStr] = Field(default=None, description='Content type such as "prompt" or "response"')
+    data_type: Optional[StrictStr] = Field(
+        default=None, description='Content type such as "prompt", "response" or "tool_event"'
+    )
     detection_service: Optional[StrictStr] = Field(
         default=None,
         description='Detection service name generating the results such as "urlf", "dlp", and "prompt injection"',
@@ -54,8 +57,16 @@ class DetectionServiceResultObject(BaseModel):
         default=None,
         description='The action is set to "block" or "allow" based on AI security profile used for scanning',
     )
+    metadata: Optional[DSResultMetadata] = None
     result_detail: Optional[DSDetailResultObject] = None
-    __properties: ClassVar[List[str]] = ["data_type", "detection_service", "verdict", "action", "result_detail"]
+    __properties: ClassVar[List[str]] = [
+        "data_type",
+        "detection_service",
+        "verdict",
+        "action",
+        "metadata",
+        "result_detail",
+    ]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -94,6 +105,9 @@ class DetectionServiceResultObject(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of metadata
+        if self.metadata:
+            _dict["metadata"] = self.metadata.to_dict()
         # override the default output from pydantic by calling `to_dict()` of result_detail
         if self.result_detail:
             _dict["result_detail"] = self.result_detail.to_dict()
@@ -113,6 +127,7 @@ class DetectionServiceResultObject(BaseModel):
             "detection_service": obj.get("detection_service"),
             "verdict": obj.get("verdict"),
             "action": obj.get("action"),
+            "metadata": DSResultMetadata.from_dict(obj["metadata"]) if obj.get("metadata") is not None else None,
             "result_detail": DSDetailResultObject.from_dict(obj["result_detail"])
             if obj.get("result_detail") is not None
             else None,

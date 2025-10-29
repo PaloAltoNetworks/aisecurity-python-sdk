@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.dbs_entry_object import DbsEntryObject
+from aisecurity.generated_openapi_client.models.dbs_entry_object import DbsEntryObject
 
 # TODO update the JSON string below
 json = "{}"

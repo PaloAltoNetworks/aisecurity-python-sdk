@@ -13,6 +13,7 @@
 # or condition, and the licensor will not be liable to you for any damages
 # arising out of these terms or the use or nature of the software, under
 # any kind of legal claim.
+from typing import Optional
 
 from singleton_decorator import singleton
 
@@ -37,7 +38,14 @@ class ScanExecutor(ScanApiBase):
         """
         super().__init__()
 
-    def sync_request(self, content: Content, ai_profile: AiProfile, tr_id: str, metadata: Metadata) -> ScanResponse:
+    def sync_request(
+        self,
+        content: Content,
+        ai_profile: AiProfile,
+        tr_id: Optional[str],
+        session_id: Optional[str],
+        metadata: Optional[Metadata],
+    ) -> ScanResponse:
         """
         Create and execute a synchronous scan request.
 
@@ -45,6 +53,7 @@ class ScanExecutor(ScanApiBase):
             content (Content): The content to be scanned.
             ai_profile (AiProfile): The AI profile to be used for scanning.
             tr_id (str): Optionally Provide any unique identifier string for correlating the prompt and response transactions. This is an optional field. The tr_id value received for scan request is returned in the scan response along with the scan ID
+            session_id (str): Optionally send session_id to track session views
             metadata (Metadata): Optionally send the app_name, app_user, and ai_model in the metadata
 
         Returns:
@@ -54,6 +63,7 @@ class ScanExecutor(ScanApiBase):
             return self.scan_api.scan_sync_request(
                 scan_request=ScanRequest(
                     tr_id=tr_id,
+                    session_id=session_id,
                     contents=[
                         ScanRequestContentsInner(
                             prompt=content.prompt,
@@ -61,6 +71,7 @@ class ScanExecutor(ScanApiBase):
                             context=content.context,
                             code_prompt=content.code_prompt,
                             code_response=content.code_response,
+                            tool_event=content.tool_event,
                         )
                     ],
                     ai_profile=ai_profile,

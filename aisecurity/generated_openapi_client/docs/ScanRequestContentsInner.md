@@ -10,11 +10,12 @@ Name | Type | Description | Notes
 **code_prompt** | **str** | Code snippet extracted from Prompt content that you want to scan | [optional] 
 **code_response** | **str** | Code snippet extracted from Response content that you want to scan | [optional] 
 **context** | **str** | The data context for contextual grounding | [optional] 
+**tool_event** | [**ToolEvent**](ToolEvent.md) |  | [optional] 
 
 ## Example
 
 ```python
-from generated_openapi_client.models.scan_request_contents_inner import ScanRequestContentsInner
+from aisecurity.generated_openapi_client.models.scan_request_contents_inner import ScanRequestContentsInner
 
 # TODO update the JSON string below
 json = "{}"

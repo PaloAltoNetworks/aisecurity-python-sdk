@@ -5,9 +5,11 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**source** | **str** | Source of the scan request (e.g., &#39;AI-Runtime-MCP-Server&#39; or &#39;AI-Runtime-API&#39;) | [optional] 
 **report_id** | **str** | Unique identifier for the scan report | 
 **scan_id** | **str** | Unique identifier for the scan | 
 **tr_id** | **str** | Unique identifier for the transaction | [optional] 
+**session_id** | **str** | Unique identifier for tracking Sessions | [optional] 
 **profile_id** | **str** | Unique identifier of the AI security profile used for scanning | [optional] 
 **profile_name** | **str** | AI security profile name used for scanning | [optional] 
 **category** | **str** | Category of the scanned content verdicts such as \&quot;malicious\&quot; or \&quot;benign\&quot; | 
@@ -18,13 +20,14 @@ Name | Type | Description | Notes
 **response_masked_data** | [**MaskedData**](MaskedData.md) |  | [optional] 
 **prompt_detection_details** | [**PromptDetectionDetails**](PromptDetectionDetails.md) |  | [optional] 
 **response_detection_details** | [**ResponseDetectionDetails**](ResponseDetectionDetails.md) |  | [optional] 
+**tool_detected** | [**ToolDetected**](ToolDetected.md) |  | [optional] 
 **created_at** | **datetime** | Scan request timestamp | [optional] 
 **completed_at** | **datetime** | Scan completion timestamp | [optional] 
 
 ## Example
 
 ```python
-from generated_openapi_client.models.scan_response import ScanResponse
+from aisecurity.generated_openapi_client.models.scan_response import ScanResponse
 
 # TODO update the JSON string below
 json = "{}"

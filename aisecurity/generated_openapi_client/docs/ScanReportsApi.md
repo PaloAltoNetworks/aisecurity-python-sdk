@@ -1,4 +1,4 @@
-# generated_openapi_client.ScanReportsApi
+# aisecurity.generated_openapi_client.ScanReportsApi
 
 All URIs are relative to *http://localhost:39090*
 
@@ -18,22 +18,22 @@ Get the Threat Scan Reports for a given list of report_ids
 
 
 ```python
-import generated_openapi_client
-from generated_openapi_client.models.threat_scan_report_object import ThreatScanReportObject
-from generated_openapi_client.rest import ApiException
+import aisecurity.generated_openapi_client
+from aisecurity.generated_openapi_client.models.threat_scan_report_object import ThreatScanReportObject
+from aisecurity.generated_openapi_client.rest import ApiException
 from pprint import pprint
 
 # Defining the host is optional and defaults to http://localhost:39090
 # See configuration.py for a list of all supported configuration parameters.
-configuration = generated_openapi_client.Configuration(
+configuration = aisecurity.generated_openapi_client.Configuration(
     host = "http://localhost:39090"
 )
 
 
 # Enter a context with an instance of the API client
-with generated_openapi_client.ApiClient(configuration) as api_client:
+with aisecurity.generated_openapi_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
-    api_instance = generated_openapi_client.ScanReportsApi(api_client)
+    api_instance = aisecurity.generated_openapi_client.ScanReportsApi(api_client)
     report_ids = ['report_ids_example'] # List[str] | Report Ids for Results
 
     try:

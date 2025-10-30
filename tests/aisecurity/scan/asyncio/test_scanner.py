@@ -35,14 +35,17 @@ class TestScanner(unittest.IsolatedAsyncioTestCase):
         ai_profile = AsyncMock(spec=AiProfile)
         content = AsyncMock(spec=Content)
         tr_id = AsyncMock(spec=str)
+        session_id = AsyncMock(spec=str)
         metadata = AsyncMock(spec=Metadata)
 
-        response = await self.scanner.sync_scan(ai_profile, content, tr_id=tr_id, metadata=metadata)
+        response = await self.scanner.sync_scan(
+            ai_profile, content, tr_id=tr_id, session_id=session_id, metadata=metadata
+        )
 
         self.assertEqual(response, "mocked_response")
         # 1 second in milliseconds
         mock_executor.sync_request.assert_called_once_with(
-            ai_profile=ai_profile, content=content, tr_id=tr_id, metadata=metadata
+            ai_profile=ai_profile, content=content, tr_id=tr_id, session_id=session_id, metadata=metadata
         )
 
     @patch("aisecurity.scan.asyncio.scanner.AsyncScanExecutor")

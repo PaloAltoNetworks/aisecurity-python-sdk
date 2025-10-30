@@ -47,7 +47,10 @@ class AsyncScanResponse(BaseModel):
     report_id: Optional[StrictStr] = Field(
         default=None, description="Unique identifier for the asynchronous scan report"
     )
-    __properties: ClassVar[List[str]] = ["received", "scan_id", "report_id"]
+    source: Optional[StrictStr] = Field(
+        default=None, description="Source of the scan request (e.g., 'AI-Runtime-MCP-Server' or 'AI-Runtime-API')"
+    )
+    __properties: ClassVar[List[str]] = ["received", "scan_id", "report_id", "source"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -101,5 +104,6 @@ class AsyncScanResponse(BaseModel):
             "received": obj.get("received"),
             "scan_id": obj.get("scan_id"),
             "report_id": obj.get("report_id"),
+            "source": obj.get("source"),
         })
         return _obj

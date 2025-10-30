@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.tc_report_object import TcReportObject
+from aisecurity.generated_openapi_client.models.tc_report_object import TcReportObject
 
 # TODO update the JSON string below
 json = "{}"

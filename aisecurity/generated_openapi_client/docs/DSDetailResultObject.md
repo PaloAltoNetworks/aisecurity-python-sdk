@@ -17,7 +17,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.ds_detail_result_object import DSDetailResultObject
+from aisecurity.generated_openapi_client.models.ds_detail_result_object import DSDetailResultObject
 
 # TODO update the JSON string below
 json = "{}"

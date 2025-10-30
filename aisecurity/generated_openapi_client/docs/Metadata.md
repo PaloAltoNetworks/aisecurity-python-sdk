@@ -9,11 +9,12 @@ Name | Type | Description | Notes
 **app_user** | **str** | End user using the AI application | [optional] 
 **ai_model** | **str** | AI model serving the AI application | [optional] 
 **user_ip** | **str** | End user IP using the AI application | [optional] 
+**agent_meta** | [**AgentMeta**](AgentMeta.md) |  | [optional] 
 
 ## Example
 
 ```python
-from generated_openapi_client.models.metadata import Metadata
+from aisecurity.generated_openapi_client.models.metadata import Metadata
 
 # TODO update the JSON string below
 json = "{}"

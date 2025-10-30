@@ -92,3 +92,7 @@ bin/
 # JetBrains / PyCharm
 .idea/*
 .idea/
+
+# Ignore Code Generate
+.code-generated/*
+.code-generated/

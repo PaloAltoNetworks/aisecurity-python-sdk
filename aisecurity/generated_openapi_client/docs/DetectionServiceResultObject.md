@@ -5,16 +5,17 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**data_type** | **str** | Content type such as \&quot;prompt\&quot; or \&quot;response\&quot; | [optional] 
+**data_type** | **str** | Content type such as \&quot;prompt\&quot;, \&quot;response\&quot; or \&quot;tool_event\&quot; | [optional] 
 **detection_service** | **str** | Detection service name generating the results such as \&quot;urlf\&quot;, \&quot;dlp\&quot;, and \&quot;prompt injection\&quot; | [optional] 
 **verdict** | **str** | Detection service verdict such as \&quot;malicious\&quot; or \&quot;benign\&quot; | [optional] 
 **action** | **str** | The action is set to \&quot;block\&quot; or \&quot;allow\&quot; based on AI security profile used for scanning | [optional] 
+**metadata** | [**DSResultMetadata**](DSResultMetadata.md) |  | [optional] 
 **result_detail** | [**DSDetailResultObject**](DSDetailResultObject.md) |  | [optional] 
 
 ## Example
 
 ```python
-from generated_openapi_client.models.detection_service_result_object import DetectionServiceResultObject
+from aisecurity.generated_openapi_client.models.detection_service_result_object import DetectionServiceResultObject
 
 # TODO update the JSON string below
 json = "{}"

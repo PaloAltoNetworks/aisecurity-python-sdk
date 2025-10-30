@@ -51,6 +51,7 @@ class Scanner(BaseLogger):
         ai_profile: AiProfile,
         content: Content,
         tr_id: Optional[str] = None,
+        session_id: Optional[str] = None,
         metadata: Optional[Metadata] = None,
     ) -> ScanResponse:
         """
@@ -64,7 +65,7 @@ class Scanner(BaseLogger):
             tr_id (str): Optionally Provide a unique identifier for correlating the prompt and response
                 transactions. This is an optional field. The tr_id value received for scan request is returned in
                 the scan response along with the scan ID.
-
+            session_id (str): Optionally send session_id to track session views
             metadata (Metadata): Optionally send the app_name, app_user, and ai_model in the metadata
 
         Returns:
@@ -74,7 +75,7 @@ class Scanner(BaseLogger):
             self._scan_executor = ScanExecutor()
 
         scan_response = self._scan_executor.sync_request(
-            ai_profile=ai_profile, content=content, tr_id=tr_id, metadata=metadata
+            ai_profile=ai_profile, content=content, tr_id=tr_id, session_id=session_id, metadata=metadata
         )
 
         self.logger.info(f"event={self.sync_scan.__name__} ")

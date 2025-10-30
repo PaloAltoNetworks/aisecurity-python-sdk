@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.agent_entry_object import AgentEntryObject
+from aisecurity.generated_openapi_client.models.agent_entry_object import AgentEntryObject
 
 # TODO update the JSON string below
 json = "{}"

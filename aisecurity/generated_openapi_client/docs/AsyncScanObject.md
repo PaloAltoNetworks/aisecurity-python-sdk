@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.async_scan_object import AsyncScanObject
+from aisecurity.generated_openapi_client.models.async_scan_object import AsyncScanObject
 
 # TODO update the JSON string below
 json = "{}"

@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.urlf_entry_object import UrlfEntryObject
+from aisecurity.generated_openapi_client.models.urlf_entry_object import UrlfEntryObject
 
 # TODO update the JSON string below
 json = "{}"

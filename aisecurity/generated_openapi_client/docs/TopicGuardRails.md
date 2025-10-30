@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.topic_guard_rails import TopicGuardRails
+from aisecurity.generated_openapi_client.models.topic_guard_rails import TopicGuardRails
 
 # TODO update the JSON string below
 json = "{}"

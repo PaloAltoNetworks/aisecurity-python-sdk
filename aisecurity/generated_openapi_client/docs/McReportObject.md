@@ -12,7 +12,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.mc_report_object import McReportObject
+from aisecurity.generated_openapi_client.models.mc_report_object import McReportObject
 
 # TODO update the JSON string below
 json = "{}"

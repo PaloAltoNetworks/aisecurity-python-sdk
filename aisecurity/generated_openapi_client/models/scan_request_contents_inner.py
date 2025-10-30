@@ -32,6 +32,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from aisecurity.generated_openapi_client.models.tool_event import ToolEvent
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -50,7 +51,8 @@ class ScanRequestContentsInner(BaseModel):
         default=None, description="Code snippet extracted from Response content that you want to scan"
     )
     context: Optional[StrictStr] = Field(default=None, description="The data context for contextual grounding")
-    __properties: ClassVar[List[str]] = ["prompt", "response", "code_prompt", "code_response", "context"]
+    tool_event: Optional[ToolEvent] = None
+    __properties: ClassVar[List[str]] = ["prompt", "response", "code_prompt", "code_response", "context", "tool_event"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -89,6 +91,14 @@ class ScanRequestContentsInner(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of tool_event
+        if self.tool_event:
+            _dict["tool_event"] = self.tool_event.to_dict()
+        # set to None if tool_event (nullable) is None
+        # and model_fields_set contains the field
+        if self.tool_event is None and "tool_event" in self.model_fields_set:
+            _dict["tool_event"] = None
+
         return _dict
 
     @classmethod
@@ -106,5 +116,6 @@ class ScanRequestContentsInner(BaseModel):
             "code_prompt": obj.get("code_prompt"),
             "code_response": obj.get("code_response"),
             "context": obj.get("context"),
+            "tool_event": ToolEvent.from_dict(obj["tool_event"]) if obj.get("tool_event") is not None else None,
         })
         return _obj

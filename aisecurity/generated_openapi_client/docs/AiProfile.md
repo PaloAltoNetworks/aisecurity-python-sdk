@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.ai_profile import AiProfile
+from aisecurity.generated_openapi_client.models.ai_profile import AiProfile
 
 # TODO update the JSON string below
 json = "{}"

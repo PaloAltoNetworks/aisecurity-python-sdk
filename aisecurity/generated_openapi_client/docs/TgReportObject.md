@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 ## Example
 
 ```python
-from generated_openapi_client.models.tg_report_object import TgReportObject
+from aisecurity.generated_openapi_client.models.tg_report_object import TgReportObject
 
 # TODO update the JSON string below
 json = "{}"

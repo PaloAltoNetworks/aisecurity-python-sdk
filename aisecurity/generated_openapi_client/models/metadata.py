@@ -32,6 +32,7 @@ import json
 
 from pydantic import BaseModel, ConfigDict, Field, StrictStr
 from typing import Any, ClassVar, Dict, List, Optional
+from aisecurity.generated_openapi_client.models.agent_meta import AgentMeta
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -45,7 +46,8 @@ class Metadata(BaseModel):
     app_user: Optional[StrictStr] = Field(default=None, description="End user using the AI application")
     ai_model: Optional[StrictStr] = Field(default=None, description="AI model serving the AI application")
     user_ip: Optional[StrictStr] = Field(default=None, description="End user IP using the AI application")
-    __properties: ClassVar[List[str]] = ["app_name", "app_user", "ai_model", "user_ip"]
+    agent_meta: Optional[AgentMeta] = None
+    __properties: ClassVar[List[str]] = ["app_name", "app_user", "ai_model", "user_ip", "agent_meta"]
 
     model_config = ConfigDict(
         populate_by_name=True,
@@ -84,6 +86,9 @@ class Metadata(BaseModel):
             exclude=excluded_fields,
             exclude_none=True,
         )
+        # override the default output from pydantic by calling `to_dict()` of agent_meta
+        if self.agent_meta:
+            _dict["agent_meta"] = self.agent_meta.to_dict()
         return _dict
 
     @classmethod
@@ -100,5 +105,6 @@ class Metadata(BaseModel):
             "app_user": obj.get("app_user"),
             "ai_model": obj.get("ai_model"),
             "user_ip": obj.get("user_ip"),
+            "agent_meta": AgentMeta.from_dict(obj["agent_meta"]) if obj.get("agent_meta") is not None else None,
         })
         return _obj

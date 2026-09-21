@@ -14,7 +14,6 @@
 # arising out of these terms or the use or nature of the software, under
 # any kind of legal claim.
 
-from urllib3 import poolmanager
 from urllib3.util import Retry
 
 from aisecurity import global_configuration
@@ -27,6 +26,7 @@ from aisecurity.constants.base import (
 )
 from aisecurity.generated_openapi_client.urllib3.api.scans_api import ScansApi
 from aisecurity.generated_openapi_client.urllib3.api_client import ApiClient
+from aisecurity.generated_openapi_client.urllib3.configuration import Configuration
 from aisecurity.logger import BaseLogger
 
 
@@ -40,20 +40,38 @@ class ApiBase(BaseLogger):
         return self.__api_client
 
     def create_api_client(self):
-        api_client = ApiClient()
+        # Build the transport configuration up front so the REST client's
+        # PoolManager is created with the TLS/cert settings applied. urllib3
+        # accepts a Retry object for ``retries``, which preserves the
+        # status-code retry behaviour while keeping the SSL pool arguments.
+        configuration = Configuration()
+        # urllib3's PoolManager accepts a Retry object for ``retries`` (it is
+        # passed straight through in the generated rest client), which lets us
+        # retry on specific HTTP status codes. The generated stub narrows the
+        # annotation to Optional[int], so the assignment is ignored for typing.
+        configuration.retries = Retry(  # type: ignore[assignment]
+            total=global_configuration.num_retries,
+            status_forcelist=HTTP_FORCE_RETRY_STATUS_CODES,
+        )
+        configuration.verify_ssl = global_configuration.verify_ssl
+        configuration.ssl_ca_cert = global_configuration.ssl_ca_cert
+        configuration.cert_file = global_configuration.cert_file
+        configuration.key_file = global_configuration.key_file
+        if global_configuration.proxy is not None:
+            configuration.proxy = global_configuration.proxy
+            configuration.proxy_headers = global_configuration.proxy_headers
+        if global_configuration.api_endpoint is not None:
+            configuration.host = global_configuration.api_endpoint
+
+        api_client = ApiClient(configuration=configuration)
         api_client.configuration.logger = self.logger
         api_client.configuration.logger_stream_handler = self.logger.handlers[0]
         api_client.user_agent = USER_AGENT
 
-        api_client.rest_client.pool_manager = poolmanager.PoolManager(
-            retries=Retry(
-                total=global_configuration.num_retries,
-                status_forcelist=HTTP_FORCE_RETRY_STATUS_CODES,
-            ),
-        )
-
-        if global_configuration.api_endpoint is not None:
-            api_client.configuration.host = global_configuration.api_endpoint
+        # Apply caller-supplied headers first so SDK-managed auth headers
+        # always take precedence and cannot be clobbered.
+        for name, value in global_configuration.custom_headers.items():
+            api_client.set_default_header(name, value)
 
         if global_configuration.api_key is not None:
             api_client.set_default_header(HEADER_API_KEY, global_configuration.api_key)

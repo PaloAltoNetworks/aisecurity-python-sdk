@@ -27,6 +27,7 @@ from aisecurity.constants.base import (
 )
 from aisecurity.generated_openapi_client.asyncio.api import ScansApi
 from aisecurity.generated_openapi_client.asyncio.api_client import ApiClient
+from aisecurity.generated_openapi_client.asyncio.configuration import Configuration
 from aisecurity.logger import BaseLogger
 
 
@@ -44,8 +45,24 @@ class ApiBase(BaseLogger):
         self.logger.debug(f"event={self.close.__name__} event=client_session_closed")
 
     def create_api_client(self):
-        api_client = ApiClient()
-        api_client.configuration.connection_pool_maxsize = MAX_CONNECTION_POOL_SIZE
+        # Populate the transport configuration before ApiClient() builds the
+        # aiohttp ClientSession, so the SSL context (CA bundle, client cert,
+        # verification toggle) and proxy settings are applied to the connector.
+        configuration = Configuration()
+        configuration.connection_pool_maxsize = MAX_CONNECTION_POOL_SIZE
+        configuration.verify_ssl = global_configuration.verify_ssl
+        configuration.ssl_ca_cert = global_configuration.ssl_ca_cert
+        configuration.cert_file = global_configuration.cert_file
+        configuration.key_file = global_configuration.key_file
+        if global_configuration.proxy is not None:
+            configuration.proxy = global_configuration.proxy
+            configuration.proxy_headers = global_configuration.proxy_headers
+        if global_configuration.api_endpoint is not None:
+            configuration.host = global_configuration.api_endpoint
+
+        api_client = ApiClient(configuration=configuration)
+        # Wrap the SSL-configured session with retry behaviour that also
+        # retries on the configured HTTP status codes.
         api_client.rest_client.retry_client = aiohttp_retry.RetryClient(
             client_session=api_client.rest_client.pool_manager,
             retry_options=aiohttp_retry.ExponentialRetry(
@@ -57,8 +74,10 @@ class ApiBase(BaseLogger):
         api_client.configuration.logger_stream_handler = self.logger.handlers[0]
         api_client.user_agent = USER_AGENT
 
-        if global_configuration.api_endpoint is not None:
-            api_client.configuration.host = global_configuration.api_endpoint
+        # Apply caller-supplied headers first so SDK-managed auth headers
+        # always take precedence and cannot be clobbered.
+        for name, value in global_configuration.custom_headers.items():
+            api_client.set_default_header(name, value)
 
         if global_configuration.api_key is not None:
             api_client.set_default_header(HEADER_API_KEY, global_configuration.api_key)

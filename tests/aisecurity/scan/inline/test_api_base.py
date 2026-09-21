@@ -17,7 +17,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-from urllib3 import poolmanager
 from urllib3.util import Retry
 
 from aisecurity import global_configuration
@@ -44,19 +43,18 @@ class TestApiBase(unittest.TestCase):
         api_base = ApiBase()
         result = api_base.create_api_client()
         self.assertEqual(result, mock_instance)
-        self.assertEqual(mock_instance.configuration.host, "https://test-endpoint.com")
         self.assertEqual(mock_instance.user_agent, USER_AGENT)
         mock_instance.set_default_header.assert_any_call(HEADER_API_KEY, "test-api-key")
-        result.rest_client.pool_manager = poolmanager.PoolManager(
-            retries=Retry(
-                total=global_configuration.num_retries,
-                status_forcelist=HTTP_FORCE_RETRY_STATUS_CODES,
-            )
-        )
 
-        retries = result.rest_client.pool_manager.connection_pool_kw["retries"]
-        assert isinstance(result.rest_client.pool_manager, poolmanager.PoolManager)
-        assert isinstance(retries, Retry)
+        # Endpoint, retry policy and TLS defaults are carried on the
+        # Configuration passed into ApiClient, so the REST pool is built with
+        # them applied (rather than replacing the pool manager afterwards).
+        config = mock_api_client.call_args.kwargs["configuration"]
+        self.assertEqual(config.host, "https://test-endpoint.com")
+        self.assertTrue(config.verify_ssl)
+        self.assertIsNone(config.ssl_ca_cert)
+        retries = config.retries
+        self.assertIsInstance(retries, Retry)
         self.assertEqual(retries.total, global_configuration.num_retries)
         self.assertEqual(retries.status_forcelist, HTTP_FORCE_RETRY_STATUS_CODES)
         global_configuration.reset()
@@ -72,7 +70,7 @@ class TestApiBase(unittest.TestCase):
         api_base = ApiBase()
         result = api_base.create_api_client()
         self.assertEqual(result, mock_instance)
-        self.assertEqual(mock_instance.configuration.host, "https://test-endpoint.com")
+        self.assertEqual(mock_api_client.call_args.kwargs["configuration"].host, "https://test-endpoint.com")
         self.assertEqual(mock_instance.user_agent, USER_AGENT)
         mock_instance.set_default_header.assert_any_call(HEADER_AUTH_TOKEN, BEARER + "test-api-token")
         global_configuration.reset()
@@ -89,10 +87,55 @@ class TestApiBase(unittest.TestCase):
         api_base = ApiBase()
         result = api_base.create_api_client()
         self.assertEqual(result, mock_instance)
-        self.assertEqual(mock_instance.configuration.host, "https://test-endpoint.com")
+        self.assertEqual(mock_api_client.call_args.kwargs["configuration"].host, "https://test-endpoint.com")
         self.assertEqual(mock_instance.user_agent, USER_AGENT)
         mock_instance.set_default_header.assert_any_call(HEADER_AUTH_TOKEN, BEARER + "test-api-token")
         mock_instance.set_default_header.assert_any_call(HEADER_API_KEY, "test-api-key")
+        global_configuration.reset()
+
+    @patch("aisecurity.scan.inline.base.ApiClient")
+    def test_api_client_tls_headers_and_proxy(self, mock_api_client):
+        mock_instance = MagicMock()
+        mock_api_client.return_value = mock_instance
+
+        global_configuration.api_endpoint = "https://test-endpoint.com"
+        global_configuration.api_key = "test-api-key"
+        # Simulate a fully configured transport (bypassing file-existence
+        # validation performed by the public setters).
+        global_configuration._verify = "/etc/ssl/ca-bundle.pem"
+        global_configuration._ssl_ca_cert = "/etc/ssl/ca-bundle.pem"
+        global_configuration._cert_file = "/etc/ssl/client.crt"
+        global_configuration._key_file = "/etc/ssl/client.key"
+        global_configuration._custom_headers = {"X-Env": "prod"}
+        global_configuration._proxy = "http://proxy.local:8080"
+        global_configuration._proxy_headers = {"Proxy-Auth": "abc"}
+
+        result = ApiBase().create_api_client()
+        self.assertEqual(result, mock_instance)
+
+        config = mock_api_client.call_args.kwargs["configuration"]
+        self.assertTrue(config.verify_ssl)
+        self.assertEqual(config.ssl_ca_cert, "/etc/ssl/ca-bundle.pem")
+        self.assertEqual(config.cert_file, "/etc/ssl/client.crt")
+        self.assertEqual(config.key_file, "/etc/ssl/client.key")
+        self.assertEqual(config.proxy, "http://proxy.local:8080")
+        self.assertEqual(config.proxy_headers, {"Proxy-Auth": "abc"})
+
+        # Caller header applied, and SDK auth header still present.
+        mock_instance.set_default_header.assert_any_call("X-Env", "prod")
+        mock_instance.set_default_header.assert_any_call(HEADER_API_KEY, "test-api-key")
+        global_configuration.reset()
+
+    @patch("aisecurity.scan.inline.base.ApiClient")
+    def test_api_client_verify_disabled(self, mock_api_client):
+        mock_instance = MagicMock()
+        mock_api_client.return_value = mock_instance
+        global_configuration.api_key = "test-api-key"
+        global_configuration._verify = False
+
+        ApiBase().create_api_client()
+        config = mock_api_client.call_args.kwargs["configuration"]
+        self.assertFalse(config.verify_ssl)
         global_configuration.reset()
 
 

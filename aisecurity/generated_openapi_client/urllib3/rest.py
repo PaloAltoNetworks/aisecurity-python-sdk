@@ -118,6 +118,20 @@ class RESTClientObject:
             else:
                 pool_args["proxy_url"] = configuration.proxy
                 pool_args["proxy_headers"] = configuration.proxy_headers
+                if configuration.proxy.lower().startswith("https://"):
+                    # urllib3 never sends a client cert to an https:// proxy
+                    # via cert_file/key_file (that pair only applies to the
+                    # tunneled target connection); it must be loaded onto a
+                    # dedicated proxy_ssl_context instead.
+                    proxy_ssl_context = ssl.create_default_context(cafile=configuration.ssl_ca_cert)
+                    if configuration.cert_file:
+                        proxy_ssl_context.load_cert_chain(
+                            configuration.cert_file, keyfile=configuration.key_file
+                        )
+                    if not configuration.verify_ssl:
+                        proxy_ssl_context.check_hostname = False
+                        proxy_ssl_context.verify_mode = ssl.CERT_NONE
+                    pool_args["proxy_ssl_context"] = proxy_ssl_context
                 self.pool_manager = urllib3.ProxyManager(**pool_args)
         else:
             self.pool_manager = urllib3.PoolManager(**pool_args)

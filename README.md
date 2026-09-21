@@ -74,6 +74,42 @@ The `aisecurity.init()` function accepts the following _**optional**_ parameters
 - `num_retries` (optional): Default value is 5.
 -  You can use either an API key or an API token for authentication. If you happen to provide both valid ones, a warning will be displayed, and the API token will be used by default.
 
+The following transport options mirror the [`requests`](https://requests.readthedocs.io/) library, for use behind a corporate proxy or with a private/internal certificate authority:
+
+- `verify` (optional): `True` (default) verifies TLS against the system CA bundle, `False` disables verification (a warning is emitted; use only for testing), or a path to a custom CA bundle to verify against.
+  - If not set, `PANW_AI_SEC_TLS_VERIFY` (`true`/`false`, or a CA-bundle path) is used, falling back to `PANW_AI_SEC_CA_CERT` (a CA-bundle path).
+- `cert` (optional): a path to a client certificate, or an `(cert_path, key_path)` tuple when the private key is in a separate file (mutual TLS).
+  - If not set, `PANW_AI_SEC_CLIENT_CERT` (and optionally `PANW_AI_SEC_CLIENT_KEY`) is used.
+  - `cert` authenticates the client to whichever party terminates TLS *closest to the client*: if `proxy` is an `https://` URL, that's the proxy itself (mTLS to the proxy); otherwise it's `api_endpoint`. Either way, the AI Security API never needs to see this certificate unless it is itself the TLS endpoint (e.g. `api_endpoint` points directly at it).
+- `headers` (optional): a `dict` of extra HTTP headers sent on every request. Headers reserved by the SDK for authentication are ignored with a warning.
+- `proxy` (optional): an outbound proxy URL. Both `http://` and `https://` proxy URLs are supported.
+  - If not set, `PANW_AI_SEC_PROXY` is used.
+- `proxy_headers` (optional): a `dict` of headers to send to the proxy.
+
+```python
+aisecurity.init(
+    api_key=api_key,
+    verify="/etc/ssl/certs/corporate-ca.pem",       # custom CA bundle
+    cert=("/etc/ssl/client.crt", "/etc/ssl/client.key"),  # mutual TLS
+    headers={"X-Request-Source": "my-app"},
+    proxy="http://proxy.example.com:8080",
+)
+```
+
+For an outbound proxy that itself requires mutual TLS (common for corporate egress
+proxies and cloud forward-proxy products), use an `https://` proxy URL together
+with `cert`. The certificate is presented to the proxy during the CONNECT
+handshake, not to the AI Security API:
+
+```python
+aisecurity.init(
+    api_key=api_key,
+    proxy="https://mtls-proxy.example.com:8443",
+    cert=("/etc/ssl/client.crt", "/etc/ssl/client.key"),  # mTLS to the proxy
+    verify="/etc/ssl/certs/proxy-ca.pem",  # trust the proxy's (or its CA's) cert
+)
+```
+
 
 
 <a id="api-key" href="#api-key">
